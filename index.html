@@ -18,7 +18,7 @@
             <div class="header__container">
                 <img src="assets/img/perfil.jpg" alt="" class="header__img">
 
-                <a href="#" class="header__logo">Bedimcode</a>
+                <a href="#" class="header__logo">BaseDoc</a>
     
                 <div class="header__search">
                     <input type="search" placeholder="Search" class="header__input">
@@ -36,69 +36,50 @@
             <nav class="nav__container">
                 <div>
                     <a href="#" class="nav__link nav__logo">
-                        <i class='bx bxs-disc nav__icon' ></i>
-                        <span class="nav__logo-name">Bedimcode</span>
+                        <img src="assets/img/IconTeste.jpeg" alt="Icone BaseDoc" class="nav__icon nav__icon--image" />
+                        <span class="nav__logo-name">BaseDoc</span>
                     </a>
     
                     <div class="nav__list">
                         <div class="nav__items">
                             <h3 class="nav__subtitle">Profile</h3>
     
-                            <a href="#" class="nav__link active">
+                            <a href="#" class="nav__link active" data-panel="inicio">
                                 <i class='bx bx-home nav__icon' ></i>
-                                <span class="nav__name">Home</span>
+                                <span class="nav__name">Inicio</span>
+                            </a>
+
+                            <a href="#" class="nav__link" data-panel="pastas">
+                                <i class='bx bx-folder nav__icon' ></i>
+                                <span class="nav__name">Pastas</span>
                             </a>
                             
-                            <div class="nav__dropdown">
-                                <a href="#" class="nav__link">
-                                    <i class='bx bx-user nav__icon' ></i>
-                                    <span class="nav__name">Profile</span>
-                                    <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
-                                </a>
+                            <a href="#" class="nav__link" data-panel="perfil">
+                                <i class='bx bx-user nav__icon' ></i>
+                                <span class="nav__name">Perfil</span>
+                            </a>
 
-                                <div class="nav__dropdown-collapse">
-                                    <div class="nav__dropdown-content">
-                                        <a href="#" class="nav__dropdown-item">Passwords</a>
-                                        <a href="#" class="nav__dropdown-item">Mail</a>
-                                        <a href="#" class="nav__dropdown-item">Accounts</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <a href="#" class="nav__link">
+                            <a href="#" class="nav__link" data-panel="mensagens">
                                 <i class='bx bx-message-rounded nav__icon' ></i>
-                                <span class="nav__name">Messages</span>
+                                <span class="nav__name">Mensagens</span>
                             </a>
                         </div>
     
                         <div class="nav__items">
                             <h3 class="nav__subtitle">Menu</h3>
     
-                            <div class="nav__dropdown">
-                                <a href="#" class="nav__link">
-                                    <i class='bx bx-bell nav__icon' ></i>
-                                    <span class="nav__name">Notifications</span>
-                                    <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
-                                </a>
-
-                                <div class="nav__dropdown-collapse">
-                                    <div class="nav__dropdown-content">
-                                        <a href="#" class="nav__dropdown-item">Blocked</a>
-                                        <a href="#" class="nav__dropdown-item">Silenced</a>
-                                        <a href="#" class="nav__dropdown-item">Publish</a>
-                                        <a href="#" class="nav__dropdown-item">Program</a>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <a href="#" class="nav__link">
-                                <i class='bx bx-compass nav__icon' ></i>
-                                <span class="nav__name">Explore</span>
+                            <a href="#" class="nav__link" data-panel="alertas">
+                                <i class='bx bx-bell nav__icon' ></i>
+                                <span class="nav__name">Alertas</span>
                             </a>
-                            <a href="#" class="nav__link">
+
+                            <a href="#" class="nav__link" data-panel="explorar">
+                                <i class='bx bx-compass nav__icon' ></i>
+                                <span class="nav__name">Explorar</span>
+                            </a>
+                            <a href="#" class="nav__link" data-panel="favoritos">
                                 <i class='bx bx-bookmark nav__icon' ></i>
-                                <span class="nav__name">Saved</span>
+                                <span class="nav__name">Favoritos</span>
                             </a>
                         </div>
                     </div>
@@ -106,9 +87,31 @@
 
                 <a href="#" class="nav__link nav__logout">
                     <i class='bx bx-log-out nav__icon' ></i>
-                    <span class="nav__name">Log Out</span>
+                    <span class="nav__name">Sair</span>
                 </a>
             </nav>
+
+            <aside class="nav__panel" aria-label="Conteudo da pagina">
+                <div class="nav__panel-header">Componentes GED</div>
+                <div class="nav__panel-list">
+                    <a href="#" class="nav__panel-item is-active">
+                        <i class='bx bx-grid-alt'></i>
+                        <span>Todos os arquivos</span>
+                    </a>
+                    <a href="#" class="nav__panel-item">
+                        <i class='bx bx-transfer'></i>
+                        <span>Fluxo de trabalho</span>
+                    </a>
+                    <a href="#" class="nav__panel-item">
+                        <i class='bx bx-pen'></i>
+                        <span>Assinatura digital</span>
+                    </a>
+                    <a href="#" class="nav__panel-item">
+                        <i class='bx bx-hdd'></i>
+                        <span>Armazenamento digital</span>
+                    </a>
+                </div>
+            </aside>
         </div>
 
         <!--========== CONTENTS ==========-->
@@ -121,6 +124,6 @@
         </main>
 
         <!--========== MAIN JS ==========-->
-        <script src="assets/js/main.js"></script>
+        <script src="assets/js/script.js"></script>
     </body>
 </html>
