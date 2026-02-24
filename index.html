@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="color-scheme" content="light">
 
         <!--========== BOX ICONS ==========-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
@@ -115,13 +116,200 @@
         </div>
 
         <!--========== CONTENTS ==========-->
-        <main>
-            <section>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Incidunt vel illum fuga unde cum, voluptates magni molestias eveniet culpa autem ut, totam veniam, suscipit tempore ullam pariatur est at asperiores?</p>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Incidunt vel illum fuga unde cum, voluptates magni molestias eveniet culpa autem ut, totam veniam, suscipit tempore ullam pariatur est at asperiores?</p>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Incidunt vel illum fuga unde cum, voluptates magni molestias eveniet culpa autem ut, totam veniam, suscipit tempore ullam pariatur est at asperiores?</p>
+        <main class="content">
+            <section class="page is-active" data-view="todos-arquivos">
+                <!-- Breadcrumb e navegação dentro de pastas -->
+                <div class="page__navigation is-hidden" id="folder-navigation">
+                    <div class="page__breadcrumb" id="breadcrumb-container"></div>
+                    <div class="page__folder-header">
+                        <h2 class="page__folder-title" id="folder-title"></h2>
+                        <div class="page__folder-settings-wrapper">
+                            <button type="button" class="page__folder-settings" aria-label="Configurações da pasta" id="folder-settings-btn">
+                                <i class='bx bx-cog'></i>
+                            </button>
+                            
+                            <!-- Menu de configurações da pasta -->
+                            <div class="folder-settings-menu is-hidden" id="folder-settings-menu">
+                                <div class="folder-settings-menu__header" id="folder-settings-menu-title">Teste Teste</div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-download'></i>
+                                    <span>Baixar</span>
+                                </div>
+                                <div class="folder-settings-menu__divider"></div>
+                                <div class="folder-settings-menu__item folder-settings-menu__item--has-submenu" id="folder-config-item">
+                                    <i class='bx bx-slider-alt'></i>
+                                    <span>Configurações da pasta</span>
+                                    <i class='bx bx-chevron-right folder-settings-menu__arrow'></i>
+                                    
+                                    <!-- Submenu de Configurações da pasta -->
+                                    <div class="folder-settings-submenu" id="folder-config-submenu">
+                                        <div class="folder-settings-menu__item" id="toggle-deleted-files">
+                                            <i class='bx bx-show'></i>
+                                            <span id="toggle-deleted-text">Mostrar arquivos excluídos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="folder-settings-menu__item folder-settings-menu__item--has-submenu">
+                                    <i class='bx bx-folder-plus'></i>
+                                    <span>Adicionar à pasta</span>
+                                    <i class='bx bx-chevron-right folder-settings-menu__arrow'></i>
+                                </div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-link'></i>
+                                    <span>Copiar link</span>
+                                </div>
+                                <div class="folder-settings-menu__divider"></div>
+                                <div class="folder-settings-menu__item folder-settings-menu__item--has-submenu">
+                                    <i class='bx bx-share-alt'></i>
+                                    <span>Compartilhar</span>
+                                    <i class='bx bx-chevron-right folder-settings-menu__arrow'></i>
+                                </div>
+                                <div class="folder-settings-menu__item folder-settings-menu__item--has-submenu">
+                                    <i class='bx bx-user-check'></i>
+                                    <span>Gerenciar permissões</span>
+                                    <i class='bx bx-chevron-right folder-settings-menu__arrow'></i>
+                                </div>
+                                <div class="folder-settings-menu__divider"></div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-rename'></i>
+                                    <span>Renomear</span>
+                                </div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-transfer'></i>
+                                    <span>Transferir</span>
+                                </div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-copy'></i>
+                                    <span>Copiar</span>
+                                </div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-trash'></i>
+                                    <span>Excluir</span>
+                                </div>
+                                <div class="folder-settings-menu__divider"></div>
+                                <div class="folder-settings-menu__item">
+                                    <i class='bx bx-info-circle'></i>
+                                    <span>Informações da pasta</span>
+                                </div>
+                                <div class="folder-settings-menu__item folder-settings-menu__item--has-submenu">
+                                    <i class='bx bx-dots-horizontal-rounded'></i>
+                                    <span>Mais</span>
+                                    <i class='bx bx-chevron-right folder-settings-menu__arrow'></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page__actions">
+                        <button type="button" class="btn btn--secondary">Enviar</button>
+                        <button type="button" class="btn btn--primary" id="new-folder-btn-nav">Nova pasta</button>
+                    </div>
+                </div>
+
+                <!-- Toolbar original (visível apenas na raiz) -->
+                <div class="page__toolbar" id="root-toolbar">
+                    <div class="page__title-wrap">
+                        <h1 class="page__title">Todos os arquivos</h1>
+                        <p class="page__subtitle">Visualize todas as pastas e arquivos em formato de lista.</p>
+                    </div>
+
+                    <div class="page__actions">
+                        <button type="button" class="btn btn--secondary">Enviar</button>
+                        <button type="button" class="btn btn--primary" id="new-folder-btn-root">Nova pasta</button>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <div class="filters__field">
+                        <i class='bx bx-search'></i>
+                        <input type="search" placeholder="Buscar por nome da pasta ou arquivo" class="filters__input" id="files-search" />
+                    </div>
+
+                    <select class="filters__select" aria-label="Filtrar por acesso" id="filter-access"></select>
+
+                    <select class="filters__select" aria-label="Filtrar por tipo" id="filter-type"></select>
+
+                    <select class="filters__select" aria-label="Filtrar por local" id="filter-location"></select>
+
+                    <div class="filters__date-wrapper">
+                        <select class="filters__select" aria-label="Filtrar por data de modificação" id="filter-modified"></select>
+                        <div class="date-range-picker is-hidden" id="date-range-picker">
+                            <div class="date-range-picker__header">Personalizado</div>
+                            <div class="date-range-picker__body">
+                                <div class="date-range-picker__field">
+                                    <label class="date-range-picker__label">Depois de</label>
+                                    <input type="date" class="date-range-picker__input" id="date-from" style="color-scheme: light !important; background: white !important;" />
+                                </div>
+                                <div class="date-range-picker__field">
+                                    <label class="date-range-picker__label">Antes de</label>
+                                    <input type="date" class="date-range-picker__input" id="date-to" style="color-scheme: light !important; background: white !important;" />
+                                </div>
+                            </div>
+                            <div class="date-range-picker__actions">
+                                <button type="button" class="date-range-picker__btn date-range-picker__btn--cancel" id="date-range-cancel">Cancelar</button>
+                                <button type="button" class="date-range-picker__btn date-range-picker__btn--apply" id="date-range-apply">Aplicar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="files-quick-filters">
+                    <button type="button" class="quick-filter-btn" id="filter-recent">
+                        <i class='bx bx-time-five'></i>
+                        <span>Recentes</span>
+                    </button>
+                    <button type="button" class="quick-filter-btn" id="filter-favorites">
+                        <i class='bx bx-star'></i>
+                        <span>Favoritos</span>
+                    </button>
+                </div>
+
+                <div class="files-bulk-actions is-hidden" id="files-bulk-actions">
+                    <button type="button" class="bulk-action-btn">Compartilhar itens selecionados</button>
+                    <button type="button" class="bulk-action-btn">Baixar</button>
+                    <button type="button" class="bulk-action-btn">Excluir</button>
+                    <button type="button" class="bulk-action-btn">Abrir com</button>
+                    <button type="button" class="bulk-action-btn bulk-action-btn--more" aria-label="Mais opções">...</button>
+                </div>
+
+                <div class="files-list" role="table" aria-label="Lista de arquivos">
+                    <div class="files-list__head" role="row">
+                        <span class="files-list__select">
+                            <input type="checkbox" class="files-list__checkbox files-list__checkbox--master" id="select-all-files" aria-label="Selecionar todos os arquivos" />
+                        </span>
+                        <span>Nome</span>
+                        <span>Última modificação</span>
+                        <span>Tamanho</span>
+                        <span>Acesso</span>
+                        <span>Local</span>
+                    </div>
+                    <div id="files-list-body"></div>
+                </div>
+            </section>
+
+            <section class="page" data-view="fluxo-trabalho">
+                <p class="page__placeholder">Fluxo de trabalho será construído no próximo passo.</p>
+            </section>
+
+            <section class="page" data-view="assinatura-digital">
+                <p class="page__placeholder">Assinatura digital será construída no próximo passo.</p>
+            </section>
+
+            <section class="page" data-view="armazenamento-digital">
+                <p class="page__placeholder">Armazenamento digital será construído no próximo passo.</p>
             </section>
         </main>
+
+        <!--========== MODAL NOVA PASTA ==========-->
+        <div class="modal-overlay is-hidden" id="new-folder-modal">
+            <div class="modal-container">
+                <h2 class="modal-title">Nova pasta</h2>
+                <input type="text" class="modal-input" id="new-folder-input" placeholder="Pasta sem nome" />
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn modal-btn--cancel" id="cancel-folder-btn">Cancelar</button>
+                    <button type="button" class="modal-btn modal-btn--create" id="create-folder-btn">Criar</button>
+                </div>
+            </div>
+        </div>
 
         <!--========== MAIN JS ==========-->
         <script src="assets/js/script.js"></script>
