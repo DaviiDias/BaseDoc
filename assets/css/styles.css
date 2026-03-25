@@ -194,6 +194,17 @@ img {
   color: var(--first-color);
 }
 
+.nav__footer {
+  display: grid;
+  row-gap: .65rem;
+}
+
+.nav__version {
+  margin: 0;
+  font-size: .68rem;
+  color: var(--text-color-light);
+}
+
 .nav__icon {
   font-size: 1.2rem;
   margin-right: .5rem;
@@ -1499,6 +1510,18 @@ img {
 
   .nav__dropdown-icon {
     display: none;
+  }
+
+  .nav__footer {
+    width: 100%;
+    justify-items: center;
+  }
+
+  .nav__version {
+    text-align: center;
+    font-size: .62rem;
+    letter-spacing: .02rem;
+    transform: translateX(-6px);
   }
 
   /* Element opacity */
