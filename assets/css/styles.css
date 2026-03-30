@@ -1162,6 +1162,10 @@ img {
   padding: .9rem;
   display: grid;
   gap: .7rem;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 .workflow__template-hub-header {
@@ -1878,6 +1882,335 @@ img {
   padding-bottom: 3rem;
 }
 
+/* ========== WORKFLOW WIZARD ========== */
+#workflow-wizard-container {
+  margin: 0;
+  padding: .2rem;
+}
+
+.workflow__document-hub {
+  margin-top: .85rem;
+}
+
+.workflow__document-hub .workflow__template-hub-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .85rem;
+}
+
+.workflow__document-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .85rem;
+}
+
+.workflow__pending-block,
+.workflow__wizard-shell,
+.workflow__wizard-card,
+.workflow__wizard-empty-state {
+  width: 100%;
+  border: 1px solid rgba(22, 8, 43, 0.1);
+  border-radius: .5rem;
+  background: #fff;
+  padding: .75rem;
+}
+
+.workflow__pending-table-wrap {
+  margin-top: .6rem;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.workflow__pending-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.workflow__pending-table th,
+.workflow__pending-table td {
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(22, 8, 43, 0.08);
+  padding: .55rem .45rem;
+  font-size: .77rem;
+  color: var(--text-color);
+}
+
+.workflow__pending-table th {
+  color: var(--title-color);
+  font-weight: var(--font-semi-bold);
+  font-size: .75rem;
+}
+
+.workflow__pending-line {
+  margin: 0 0 .22rem;
+  line-height: 1.35;
+}
+
+.workflow__pending-line span {
+  color: var(--text-color-light);
+}
+
+.workflow__pending-action {
+  min-height: 30px;
+  white-space: nowrap;
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.workflow__pending-action:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.workflow__pending-action.is-active {
+  background: #1e40af;
+  border-color: #1e40af;
+}
+
+.workflow__wizard-shell {
+  display: grid;
+  gap: .7rem;
+}
+
+.workflow__wizard-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: .45rem;
+}
+
+.workflow__wizard-step {
+  appearance: none;
+  border: 1px solid rgba(22, 8, 43, 0.12);
+  border-radius: .45rem;
+  min-height: 48px;
+  padding: .45rem;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .3rem;
+  background: var(--container-color);
+  font-family: var(--body-font);
+  cursor: pointer;
+}
+
+.workflow__wizard-step:disabled {
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.workflow__wizard-step-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 8, 43, 0.25);
+  color: var(--text-color);
+  font-size: .72rem;
+  font-weight: var(--font-semi-bold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workflow__wizard-step-label {
+  font-size: .72rem;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.workflow__wizard-step.is-active {
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.workflow__wizard-step.is-active .workflow__wizard-step-circle {
+  border-color: transparent;
+  background: var(--first-color-light);
+  color: var(--first-color);
+}
+
+.workflow__wizard-step.is-done .workflow__wizard-step-circle {
+  border-color: transparent;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.workflow__wizard-step.is-valid {
+  border-color: rgba(22, 163, 74, 0.4);
+  background: #ecfdf3;
+}
+
+.workflow__wizard-step.is-valid .workflow__wizard-step-circle {
+  border-color: transparent;
+  background: #16a34a;
+  color: #fff;
+}
+
+.workflow__wizard-step.is-skipped {
+  border-color: rgba(217, 119, 6, 0.4);
+  background: #fff7ed;
+}
+
+.workflow__wizard-step.is-skipped .workflow__wizard-step-circle {
+  border-color: transparent;
+  background: #d97706;
+  color: #fff;
+}
+
+.workflow__wizard-step.is-error {
+  border-color: rgba(220, 38, 38, 0.45);
+  background: #fef2f2;
+}
+
+.workflow__wizard-step.is-error .workflow__wizard-step-circle {
+  border-color: transparent;
+  background: #dc2626;
+  color: #fff;
+}
+
+.workflow__filters--access {
+  grid-template-columns: minmax(220px, 320px);
+  gap: .35rem;
+}
+
+.workflow__wizard-step-meta {
+  margin: 0 0 .25rem;
+  font-size: .75rem;
+  color: var(--text-color-light);
+}
+
+.workflow__wizard-form-field {
+  display: grid;
+  gap: .35rem;
+  margin-top: .6rem;
+}
+
+.workflow__wizard-textarea {
+  width: 100%;
+  border: 1px solid rgba(22, 8, 43, 0.12);
+  border-radius: .45rem;
+  padding: .55rem .65rem;
+  font-size: .8rem;
+  font-family: var(--body-font);
+  color: var(--text-color);
+  background: var(--container-color);
+  min-height: 110px;
+  resize: vertical;
+}
+
+.workflow__wizard-input {
+  width: 100%;
+  border: 1px solid rgba(22, 8, 43, 0.12);
+  border-radius: .45rem;
+  padding: .55rem .65rem;
+  font-size: .8rem;
+  font-family: var(--body-font);
+  color: var(--text-color);
+  background: var(--container-color);
+  min-height: 36px;
+}
+
+.workflow__wizard-input--date {
+  cursor: pointer;
+}
+
+.workflow__datepicker-wrap {
+  position: relative;
+}
+
+.workflow__datepicker-popover {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + .35rem);
+  left: 0;
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid rgba(22, 8, 43, 0.12);
+  border-radius: .5rem;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+  padding: .5rem;
+}
+
+.workflow__datepicker-popover.is-hidden {
+  display: none;
+}
+
+.workflow__datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .4rem;
+}
+
+.workflow__datepicker-month {
+  font-size: .78rem;
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+  text-transform: capitalize;
+}
+
+.workflow__datepicker-nav {
+  border: 1px solid rgba(22, 8, 43, 0.15);
+  background: #fff;
+  border-radius: .35rem;
+  width: 26px;
+  height: 24px;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.workflow__datepicker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .2rem;
+}
+
+.workflow__datepicker-weekday {
+  text-align: center;
+  font-size: .68rem;
+  color: var(--text-color-light);
+  font-weight: var(--font-semi-bold);
+  padding: .15rem 0;
+}
+
+.workflow__datepicker-day {
+  border: 1px solid transparent;
+  background: #fff;
+  border-radius: .3rem;
+  min-height: 24px;
+  font-size: .72rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.workflow__datepicker-day:hover {
+  border-color: rgba(37, 99, 235, 0.25);
+  background: #eff6ff;
+}
+
+.workflow__datepicker-day.is-selected {
+  border-color: transparent;
+  background: #2563eb;
+  color: #fff;
+}
+
+.workflow__datepicker-day.is-empty {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.workflow__wizard-actions {
+  margin-top: .75rem;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+
 .workflow__form-row {
   display: grid;
   gap: .35rem;
@@ -1914,6 +2247,10 @@ img {
 }
 
 @media screen and (max-width: 767px) {
+  body {
+    padding: .6rem .5rem 0;
+  }
+
   .nav {
     display: grid;
     grid-template-columns: 132px minmax(0, 1fr);
@@ -2054,6 +2391,18 @@ img {
   .workflow__right-column {
     order: 2;
   }
+
+  .workflow__wizard-steps {
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  }
+
+  .workflow__wizard-actions {
+    justify-content: stretch;
+  }
+
+  .workflow__wizard-actions .btn {
+    flex: 1 1 100%;
+  }
 }
 
 
@@ -2069,9 +2418,61 @@ img {
 
 /* ========== MEDIA QUERIES ==========*/
 /* For small devices reduce search*/
+@media screen and (max-width: 767px) {
+  .header__container {
+    position: static;
+    gap: .3rem;
+    justify-content: flex-start;
+  }
+
+  .header__profile {
+    flex: 0 0 auto;
+  }
+
+  .header__search {
+    flex: 1 1 auto;
+    max-width: none;
+    margin: 0 .2rem;
+    padding: .3rem .45rem;
+  }
+
+  .header__toggle {
+    margin-left: 0;
+    flex: 0 0 auto;
+  }
+
+  .header__input {
+    font-size: .65rem;
+  }
+
+  .header__icon {
+    font-size: .9rem;
+  }
+
+  .header__logo {
+    font-size: .9rem;
+  }
+}
+
 @media screen and (max-width: 320px) {
   .header__search {
-    width: 70%;
+    flex: 0 1 34%;
+    max-width: 110px;
+    margin: 0 .15rem;
+    padding: .2rem .35rem;
+  }
+
+  .header__input {
+    display: block;
+    font-size: .62rem;
+  }
+
+  .header__icon {
+    font-size: .8rem;
+  }
+
+  .header__logo {
+    display: none;
   }
 
   .header__user-name {
@@ -2310,4 +2711,509 @@ img {
   margin: 0 0 .75rem;
   font-size: .8rem;
   color: var(--text-color-light);
+}
+
+/* ========== RESPONSIVIDADE WORKFLOW ========== */
+
+@media screen and (max-width: 1024px) {
+  .workflow__document-hub .workflow__template-hub-header {
+    gap: .6rem;
+  }
+
+  .workflow__wizard-steps {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .workflow__pending-table {
+    min-width: auto;
+    font-size: .73rem;
+  }
+
+  .workflow__pending-table th,
+  .workflow__pending-table td {
+    padding: .4rem .3rem;
+  }
+
+  .workflow__section-title {
+    font-size: .9rem;
+  }
+
+  .workflow__section-subtitle {
+    font-size: .73rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .workflow__filters--access {
+    grid-template-columns: 1fr;
+    gap: .5rem;
+  }
+
+  .workflow__template-hub {
+    padding: .4rem;
+    gap: .4rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .workflow__document-hub .workflow__template-hub-header {
+    display: block;
+  }
+
+  .workflow__document-content {
+    display: block;
+  }
+
+  .workflow__pending-block,
+  .workflow__wizard-shell {
+    width: 100%;
+    padding: .45rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .workflow__filters {
+    grid-template-columns: 1fr;
+    gap: .5rem;
+  }
+
+  .workflow__field {
+    min-width: 0;
+  }
+
+  .workflow__select {
+    max-width: 100%;
+    height: 34px;
+    font-size: .76rem;
+    padding: 0 .5rem;
+  }
+
+  .workflow__pending-line {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .workflow__pending-table-wrap {
+    margin-top: .3rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .workflow__pending-table {
+    min-width: 100%;
+    font-size: .7rem;
+  }
+
+  .workflow__pending-table th,
+  .workflow__pending-table td {
+    padding: .35rem .25rem;
+  }
+
+  .workflow__pending-line {
+    margin: 0 0 .15rem;
+    font-size: .7rem;
+  }
+
+  .workflow__pending-action {
+    min-height: 28px;
+    font-size: .68rem;
+    padding: .4rem .6rem;
+    white-space: normal;
+  }
+
+  .workflow__wizard-steps {
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+    gap: .35rem;
+  }
+
+  .workflow__wizard-step {
+    border-radius: .4rem;
+    padding: .4rem .3rem;
+    font-size: .65rem;
+    min-height: auto;
+  }
+
+  .workflow__wizard-step-circle {
+    width: 22px;
+    height: 22px;
+    font-size: .65rem;
+    line-height: 22px;
+  }
+
+  .workflow__wizard-step-label {
+    font-size: .65rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .workflow__wizard-card {
+    padding: .55rem;
+  }
+
+  .workflow__section-title {
+    font-size: .85rem;
+  }
+
+  .workflow__section-subtitle {
+    font-size: .7rem;
+    margin: .15rem 0 .55rem;
+  }
+
+  .workflow__wizard-form-field {
+    margin-bottom: .5rem;
+  }
+
+  .workflow__template-label {
+    font-size: .72rem;
+  }
+
+  .workflow__wizard-input {
+    min-height: 32px;
+    font-size: .75rem;
+  }
+
+  .workflow__wizard-actions {
+    gap: .4rem;
+  }
+
+  .workflow__wizard-actions .btn {
+    padding: .5rem .75rem;
+    font-size: .72rem;
+    min-height: 32px;
+  }
+
+  .workflow__datepicker-popover {
+    min-width: 240px;
+  }
+
+  .workflow__datepicker-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: .25rem;
+  }
+
+  .workflow__datepicker-day {
+    min-height: 20px;
+    font-size: .65rem;
+  }
+
+  .page[data-view="fluxo-trabalho"] {
+    padding-bottom: 2rem;
+  }
+
+  /* Tabela otimizada para mobile */
+  .workflow__pending-table {
+    min-width: auto;
+    font-size: .68rem;
+  }
+
+  .workflow__pending-table th,
+  .workflow__pending-table td {
+    padding: .3rem .2rem;
+  }
+
+  .workflow__pending-table-wrap {
+    margin-top: .3rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header__container {
+    position: static;
+    gap: .25rem;
+    justify-content: flex-start;
+  }
+
+  .header__profile-trigger {
+    gap: .3rem;
+  }
+
+  .header__search {
+    flex: 1 1 auto;
+    max-width: none;
+    margin: 0 .15rem;
+    padding: .28rem .42rem;
+  }
+
+  .workflow__template-hub {
+    padding: .6rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .workflow__pending-line {
+    margin: 0 0 .1rem;
+    font-size: .65rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  .workflow__pending-line strong {
+    word-break: break-word;
+    display: inline;
+  }
+
+  /* Reduzir colunas em mobile */
+  .workflow__pending-table th {
+    font-size: .65rem;
+    padding: .25rem .15rem;
+  }
+
+  .workflow__pending-table td {
+    font-size: .65rem;
+    padding: .25rem .15rem;
+  }
+
+  .workflow__pending-table {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .workflow__pending-action {
+    min-height: 26px;
+    font-size: .65rem;
+    padding: .35rem .5rem;
+    white-space: normal;
+  }
+
+  .workflow__pending-table-wrap {
+    margin-top: .3rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .workflow__wizard-shell {
+    padding: .55rem;
+  }
+
+  .workflow__wizard-card {
+    padding: .4rem;
+  }
+
+  .workflow__pending-table-wrap {
+    margin-top: .3rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .workflow__pending-table {
+    min-width: 100%;
+    width: 100%;
+    font-size: .63rem;
+  }
+
+  .workflow__pending-table th {
+    display: none;
+  }
+
+  .workflow__pending-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto auto;
+    gap: .1rem;
+    background: var(--container-color);
+    border: 1px solid rgba(22, 8, 43, 0.1);
+    border-radius: .3rem;
+    padding: .35rem;
+    margin-bottom: .3rem;
+  }
+
+  .workflow__pending-table td:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .workflow__pending-table td:last-child {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: .2rem;
+  }
+
+  .workflow__pending-table td:nth-child(2),
+  .workflow__pending-table td:nth-child(3),
+  .workflow__pending-table td:nth-child(4),
+  .workflow__pending-table td:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+
+  .workflow__pending-table td {
+    font-size: .65rem;
+    padding: .2rem .15rem;
+  }
+
+  .workflow__pending-line {
+    margin: 0 0 .08rem;
+    font-size: .62rem;
+    line-height: 1.3;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .workflow__pending-action {
+    min-height: 26px;
+    font-size: .62rem;
+    padding: .3rem .4rem;
+    white-space: nowrap;
+  }
+
+  .workflow__wizard-steps {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: .3rem;
+  }
+
+  .workflow__wizard-step {
+    padding: .35rem .25rem;
+    font-size: .6rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: auto;
+  }
+
+  .workflow__wizard-step-circle {
+    width: 20px;
+    height: 20px;
+    font-size: .6rem;
+    line-height: 20px;
+    flex-shrink: 0;
+  }
+
+  .workflow__wizard-step-label {
+    font-size: .6rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+  }
+
+  .workflow__section-title {
+    font-size: .8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  .workflow__section-subtitle {
+    font-size: .65rem;
+    margin: .1rem 0 .45rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .workflow__template-label {
+    font-size: .7rem;
+  }
+
+  .workflow__wizard-input {
+    min-height: 30px;
+    font-size: .72rem;
+    padding: 0 .45rem;
+  }
+
+  .workflow__wizard-form-field {
+    margin-bottom: .4rem;
+  }
+
+  .workflow__wizard-actions {
+    flex-direction: column;
+    gap: .35rem;
+  }
+
+  .workflow__wizard-actions .btn {
+    width: 100%;
+    padding: .45rem .6rem;
+    font-size: .7rem;
+  }
+
+  .workflow__datepicker-popover {
+    min-width: 220px;
+  }
+
+  .workflow__datepicker-header {
+    padding: .35rem;
+  }
+
+  .workflow__datepicker-month {
+    font-size: .75rem;
+  }
+
+  .workflow__datepicker-nav {
+    width: 22px;
+    height: 20px;
+  }
+
+  .workflow__datepicker-nav i {
+    font-size: .8rem;
+  }
+
+  .workflow__datepicker-grid {
+    gap: .2rem;
+  }
+
+  .workflow__datepicker-grid-header {
+    font-size: .6rem;
+  }
+
+  .workflow__datepicker-day {
+    min-height: 18px;
+    font-size: .6rem;
+  }
+
+  .page[data-view="fluxo-trabalho"] {
+    padding-bottom: 1.5rem;
+  }
+
+  .page__title {
+    font-size: 1.3rem;
+  }
+
+  .page__subtitle {
+    font-size: .75rem;
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .header__container {
+    position: static;
+    gap: .2rem;
+  }
+
+  .header__search {
+    flex: 1 1 auto;
+    max-width: none;
+    margin: 0 .12rem;
+    padding: .28rem .4rem;
+  }
+
+  .workflow__template-hub,
+  .workflow__document-hub,
+  .workflow__pending-block,
+  .workflow__wizard-shell {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .workflow__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow__select {
+    width: 100%;
+    max-width: 100%;
+    height: 32px;
+    font-size: .74rem;
+    padding: 0 .45rem;
+  }
 }

@@ -323,35 +323,22 @@
                 <div class="workflow">
                     <div class="workflow__toolbar">
                         <div>
-                            <h1 class="page__title">Fluxo de documentos por caixa</h1>
-                            <p class="page__subtitle">Página operacional de documentos. Os templates são gerenciados na página "Fluxo de templates".</p>
+                            <h1 class="page__title">Documentos pendentes</h1>
+                            <p class="page__subtitle">Preencha os dados do documento passando por todas as etapas do modelo selecionado.</p>
                         </div>
                     </div>
 
-                    <div class="workflow__filters">
-                        <div class="workflow__field">
-                            <label for="workflow-model" class="workflow__label">Modelo do documento</label>
-                            <select id="workflow-model" class="workflow__select"></select>
-                        </div>
-                        <div class="workflow__field">
-                            <label for="workflow-my-step" class="workflow__label">Minha caixa</label>
-                            <select id="workflow-my-step" class="workflow__select"></select>
-                        </div>
-                        <label class="workflow__focus">
-                            <input type="checkbox" id="workflow-focus-mode" checked>
-                            <span>Mostrar somente minha caixa</span>
-                        </label>
+                    <div class="workflow__filters workflow__filters--access">
+                        <label for="workflow-user-access" class="workflow__label">Perfil de acesso</label>
+                        <select id="workflow-user-access" class="workflow__select"></select>
                     </div>
 
-                    <div class="workflow__board" id="workflow-board"></div>
-
-                    <div class="workflow__actions-panel">
-                        <div class="workflow__actions-copy">
-                            <div class="workflow__section-title">Operação de documentos</div>
-                            <p class="workflow__section-subtitle">Crie documentos a partir do template ativo e mova entre caixas.</p>
-                        </div>
-                        <div class="workflow__actions">
-                            <button type="button" class="btn btn--primary" id="workflow-new-document">Novo documento</button>
+                    <div class="workflow__template-hub workflow__document-hub">
+                        <div class="workflow__template-hub-header" id="workflow-wizard-container">
+                            <div>
+                                <div class="workflow__section-title">Preenchimento de documentos por etapas</div>
+                                <p class="workflow__section-subtitle">Confira os documentos pendentes, veja quem precisa preencher cada dado e avance no wizard conforme as caixas liberadas para o seu acesso.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -361,7 +348,7 @@
                 <div class="workflow">
                     <div class="workflow__toolbar">
                         <div>
-                            <h1 class="page__title">Fluxo de templates por modelo</h1>
+                            <h1 class="page__title">Templeites de Documentos</h1>
                             <p class="page__subtitle">Página para editar templates: selecionar ou criar template, escolher caixas (steps), gerenciar cláusulas e salvar.</p>
                         </div>
                     </div>
@@ -454,5 +441,6 @@
 
         <!--========== MAIN JS ==========-->
         <script src="assets/js/script.js"></script>
+        <script src="assets/js/workflow-documents-page.js"></script>
     </body>
 </html>

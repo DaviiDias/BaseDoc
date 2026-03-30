@@ -213,8 +213,8 @@ const panelData = {
             {
                 items: [
                     { icon: 'bx-grid-alt', label: 'Todos os arquivos', view: 'todos-arquivos', active: true },
-                    { icon: 'bx-transfer', label: 'Fluxo de documentos', view: 'fluxo-trabalho' },
-                    { icon: 'bx-shape-square', label: 'Fluxo de templates', view: 'fluxo-templates' },
+                    { icon: 'bx-transfer', label: 'Documentos pendentes', view: 'fluxo-trabalho' },
+                    { icon: 'bx-shape-square', label: 'Templeites de Documentos', view: 'fluxo-templates' },
                     { icon: 'bx-pen', label: 'Assinatura digital', view: 'assinatura-digital' },
                     { icon: 'bx-hdd', label: 'Armazenamento digital', view: 'armazenamento-digital' }
                 ]
@@ -3191,7 +3191,7 @@ function initWorkflowEngine() {
     workflowRefs.saveFlowButton = document.getElementById('workflow-save-flow')
     workflowRefs.savedList = document.getElementById('workflow-saved-list')
 
-    if (!workflowRefs.modelSelect || !workflowRefs.board) {
+    if (!workflowRefs.modelSelect && !workflowRefs.templateContent) {
         return
     }
 
