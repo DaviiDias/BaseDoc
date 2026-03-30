@@ -11,7 +11,7 @@
         <!--========== CSS ==========-->
         <link rel="stylesheet" href="assets/css/styles.css">
         
-        <title>Responsive sidebar submenus</title>
+        <title>Blanes Vault</title>
     </head>
     <body>
         <!--========== HEADER ==========-->
@@ -324,7 +324,7 @@
                     <div class="workflow__toolbar">
                         <div>
                             <h1 class="page__title">Fluxo de documentos por caixa</h1>
-                            <p class="page__subtitle">Cada pessoa visualiza sua caixa e move o documento para a próxima etapa.</p>
+                            <p class="page__subtitle">Página operacional de documentos. Os templates são gerenciados na página "Fluxo de templates".</p>
                         </div>
                     </div>
 
@@ -345,47 +345,39 @@
 
                     <div class="workflow__board" id="workflow-board"></div>
 
-                    <div class="workflow__saved">
-                        <div class="workflow__section-title">Fluxos salvos</div>
-                        <p class="workflow__section-subtitle">Salve uma configuração de fluxo por modelo para reutilizar depois.</p>
-                        <div id="workflow-saved-list" class="workflow__saved-list"></div>
+                    <div class="workflow__actions-panel">
+                        <div class="workflow__actions-copy">
+                            <div class="workflow__section-title">Operação de documentos</div>
+                            <p class="workflow__section-subtitle">Crie documentos a partir do template ativo e mova entre caixas.</p>
+                        </div>
+                        <div class="workflow__actions">
+                            <button type="button" class="btn btn--primary" id="workflow-new-document">Novo documento</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page" data-view="fluxo-templates">
+                <div class="workflow">
+                    <div class="workflow__toolbar">
+                        <div>
+                            <h1 class="page__title">Fluxo de templates por modelo</h1>
+                            <p class="page__subtitle">Página para editar templates: selecionar ou criar template, escolher caixas (steps), gerenciar cláusulas e salvar.</p>
+                        </div>
                     </div>
 
-                    <div class="workflow__editor">
-                        <div class="workflow__left-column">
-                            <div class="workflow__actions-panel">
-                                <div class="workflow__actions-copy">
-                                    <div class="workflow__section-title">Próximos passos</div>
-                                    <p class="workflow__section-subtitle">Adicione etapas extras se necessário, crie documentos e finalize salvando o fluxo quando concluir.</p>
-                                </div>
-                                <div class="workflow__actions">
-                                    <button type="button" class="btn btn--secondary" id="workflow-new-extra">Adicionar etapa extra</button>
-                                    <button type="button" class="btn btn--primary" id="workflow-new-document">Novo documento</button>
-                                    <button type="button" class="btn btn--save-highlight" id="workflow-save-flow">Finalizar e salvar fluxo</button>
-                                </div>
+                    <div class="workflow__template-hub" id="workflow-template-hub">
+                        <div class="workflow__template-hub-header">
+                            <div>
+                                <div class="workflow__section-title">Template do documento selecionado</div>
+                                <p class="workflow__section-subtitle">Selecione ou crie um template, ajuste os steps por caixa e gerencie as cláusulas do template.</p>
                             </div>
-
-                            <div class="workflow__active-builder">
-                                <div class="workflow__section-title">Cláusulas ativas</div>
-                                <p class="workflow__section-subtitle">Qualifique as partes e preencha os campos para montar o documento.</p>
-
-                                <div class="workflow__form" id="workflow-clause-form"></div>
-
-                                <div class="workflow__selected" id="workflow-selected-clauses"></div>
-                            </div>
-
-                            <div class="workflow__document-builder">
-                                <div class="workflow__section-title">Documento padronizado</div>
-                                <p class="workflow__section-subtitle">Pré-visualização em tempo real com base nas cláusulas preenchidas.</p>
-                                <div class="workflow__document-preview" id="workflow-document-preview"></div>
+                            <div class="workflow__template-hub-actions">
+                                <button type="button" class="btn btn--secondary" id="workflow-template-new-btn">Criar novo template</button>
                             </div>
                         </div>
 
-                        <div class="workflow__library workflow__right-column">
-                            <div class="workflow__section-title">Cláusulas do modelo</div>
-                            <p class="workflow__section-subtitle">Escolha cláusulas prontas e preencha apenas os campos necessários.</p>
-                            <div id="workflow-clause-library" class="workflow__library-list"></div>
-                        </div>
+                        <div class="workflow__template-content" id="workflow-template-content"></div>
                     </div>
                 </div>
             </section>
@@ -415,7 +407,12 @@
         <div class="modal-overlay is-hidden" id="workflow-new-document-modal">
             <div class="modal-container">
                 <h2 class="modal-title">Novo documento</h2>
+                <p class="modal-hint" id="workflow-document-template-info"></p>
                 <input type="text" class="modal-input" id="workflow-document-input" placeholder="Nome do documento" />
+                <label class="workflow__focus workflow__focus--static">
+                    <input type="checkbox" checked disabled>
+                    <span>Documento imutável após sair de rascunho</span>
+                </label>
                 <div class="modal-actions">
                     <button type="button" class="modal-btn modal-btn--cancel" id="workflow-document-cancel">Cancelar</button>
                     <button type="button" class="modal-btn modal-btn--create" id="workflow-document-create">Criar</button>
