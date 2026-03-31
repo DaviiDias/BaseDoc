@@ -90,9 +90,9 @@
                                 <span class="nav__name">Perfil</span>
                             </a>
 
-                            <a href="#" class="nav__link" data-panel="mensagens">
-                                <i class='bx bx-message-rounded nav__icon' ></i>
-                                <span class="nav__name">Mensagens</span>
+                            <a href="#" class="nav__link" data-panel="emails">
+                                <i class='bx bx-envelope nav__icon' ></i>
+                                <span class="nav__name">E-mails</span>
                             </a>
                         </div>
     
@@ -143,10 +143,6 @@
                     <a href="#" class="nav__panel-item" data-view="fluxo-templates">
                         <i class='bx bx-shape-square'></i>
                         <span>Templates de Documentos</span>
-                    </a>
-                    <a href="#" class="nav__panel-item" data-view="assinatura-digital">
-                        <i class='bx bx-pen'></i>
-                        <span>Assinatura digital</span>
                     </a>
                     <a href="#" class="nav__panel-item" data-view="armazenamento-digital">
                         <i class='bx bx-hdd'></i>
@@ -487,14 +483,340 @@
                 </div>
             </section>
 
-            <section class="page" data-view="assinatura-digital">
-                <p class="page__placeholder">Assinatura digital será construída no próximo passo.</p>
-            </section>
-
             <section class="page" data-view="armazenamento-digital">
                 <p class="page__placeholder">Armazenamento digital será construído no próximo passo.</p>
             </section>
+
+            <!--========== NOVO EMAIL ==========-->
+            <section class="page" data-view="novo-email">
+                <div class="email-composer">
+                    <div class="email-composer__header">
+                        <h1 class="page__title">Novo E-mail</h1>
+                        <p class="page__subtitle">Compose e envie e-mails para destinatários dentro do sistema.</p>
+                    </div>
+
+                    <div class="email-form-container">
+                        <form class="email-form" id="email-form">
+                            <!-- Destinatário -->
+                            <div class="email-form__group">
+                                <label for="email-to" class="email-form__label">E-mail do Destinatário<span class="email-form__required">*</span></label>
+                                <input 
+                                    type="text" 
+                                    id="email-to" 
+                                    class="email-form__input" 
+                                    placeholder="Para"
+                                />
+                            </div>
+
+                            <!-- Cópia -->
+                            <div class="email-form__group">
+                                <label for="email-cc" class="email-form__label">Cópia</label>
+                                <input 
+                                    type="text" 
+                                    id="email-cc" 
+                                    class="email-form__input" 
+                                    placeholder="CC (opcional)" 
+                                />
+                            </div>
+
+                            <!-- Assunto -->
+                            <div class="email-form__group">
+                                <label for="email-subject" class="email-form__label">Assunto<span class="email-form__required">*</span></label>
+                                <input 
+                                    type="text" 
+                                    id="email-subject" 
+                                    class="email-form__input" 
+                                    placeholder="Assunto"
+                                />
+                            </div>
+
+                            <!-- Editor de Email -->
+                            <div class="email-form__group email-form__group--full">
+                                <label class="email-form__label">Mensagem<span class="email-form__required">*</span></label>
+                                <div class="email-editor-wrapper">
+                                    <div class="email-editor-toolbar">
+                                        <div class="email-editor-toolbar__group">
+                                            <button type="button" class="email-editor-btn" title="Negrito" data-format="bold">
+                                                <i class='bx bx-bold'></i>
+                                            </button>
+                                            <button type="button" class="email-editor-btn" title="Itálico" data-format="italic">
+                                                <i class='bx bx-italic'></i>
+                                            </button>
+                                            <button type="button" class="email-editor-btn" title="Sublinhado" data-format="underline">
+                                                <i class='bx bx-underline'></i>
+                                            </button>
+                                        </div>
+                                        <div class="email-editor-toolbar__group">
+                                            <button type="button" class="email-editor-btn" title="Alinhar esquerda" data-format="justifyLeft">
+                                                <i class='bx bx-align-left'></i>
+                                            </button>
+                                            <button type="button" class="email-editor-btn" title="Centralizar" data-format="justifyCenter">
+                                                <i class='bx bx-align-middle'></i>
+                                            </button>
+                                            <button type="button" class="email-editor-btn" title="Alinhar direita" data-format="justifyRight">
+                                                <i class='bx bx-align-right'></i>
+                                            </button>
+                                        </div>
+                                        <div class="email-editor-toolbar__group">
+                                            <button type="button" class="email-editor-btn" title="Lista com marcadores" data-format="insertUnorderedList">
+                                                <i class='bx bx-list-ul'></i>
+                                            </button>
+                                            <button type="button" class="email-editor-btn" title="Lista numerada" data-format="insertOrderedList">
+                                                <i class='bx bx-list-ol'></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="email-editor" id="email-content" contenteditable="true"></div>
+                                </div>
+                            </div>
+
+                            <!-- Anexos -->
+                            <div class="email-form__group email-form__group--full">
+                                <div class="email-attachments">
+                                    <div class="email-attachments__header">
+                                        <label class="email-form__label">Anexos</label>
+                                        <button type="button" class="btn btn--secondary btn--small" id="btn-add-attachments">
+                                            <i class='bx bx-plus'></i>
+                                            <span>Adicionar Anexos</span>
+                                        </button>
+                                    </div>
+                                    <div class="email-attachments__list" id="attachments-list"></div>
+                                </div>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="email-form__actions">
+                                <button type="submit" class="btn btn--primary">
+                                    <i class='bx bx-send'></i>
+                                    <span>Enviar E-mail</span>
+                                </button>
+                                <button type="button" class="btn btn--secondary" id="btn-cancel-email">
+                                    <i class='bx bx-arrow-left'></i>
+                                    <span>Cancelar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ASSINATURAS PAGE -->
+            <section class="page" data-view="assinaturas">
+                <div class="page__header">
+                    <h1 class="page__title">Assinaturas</h1>
+                    <p class="page__subtitle">Crie e gerencie suas assinaturas de email.</p>
+                </div>
+
+                <div class="signatures-wrapper">
+                    <!-- Lista de Assinaturas (Esquerda) -->
+                    <div class="signatures-list-panel">
+                        <div class="signatures-list-header">
+                            <h2 class="signatures-list-title">Suas Assinaturas</h2>
+                            <button type="button" class="btn btn--primary btn--small" id="btn-new-signature">
+                                <i class='bx bx-plus'></i>
+                                <span>Nova</span>
+                            </button>
+                        </div>
+                        <div class="signatures-list" id="signatures-list"></div>
+                    </div>
+
+                    <!-- Editor de Assinatura (Direita) -->
+                    <div class="signature-editor-panel" id="signature-editor-panel">
+                        <div class="signature-editor-header">
+                            <h2 class="signature-editor-title" id="signature-editor-title">Selecione uma assinatura</h2>
+                        </div>
+
+                        <div class="signature-editor-form" id="signature-editor-form">
+                            <!-- Nome da Assinatura -->
+                            <div class="signature-form-group">
+                                <label for="signature-name" class="signature-form-label">Nome da Assinatura</label>
+                                <input type="text" id="signature-name" class="signature-form-input" placeholder="Ex: Assinatura Profissional">
+                            </div>
+
+                            <!-- Dados Pessoais -->
+                            <div class="signature-form-section">
+                                <h3 class="signature-form-section-title">Dados</h3>
+                                
+                                <div class="signature-form-group">
+                                    <label for="signature-full-name" class="signature-form-label">Nome Completo</label>
+                                    <input type="text" id="signature-full-name" class="signature-form-input" placeholder="Seu Nome">
+                                </div>
+
+                                <div class="signature-form-group">
+                                    <label for="signature-job-title" class="signature-form-label">Cargo</label>
+                                    <input type="text" id="signature-job-title" class="signature-form-input" placeholder="Seu Cargo">
+                                </div>
+
+                                <div class="signature-form-group">
+                                    <label for="signature-department" class="signature-form-label">Departamento</label>
+                                    <input type="text" id="signature-department" class="signature-form-input" placeholder="Seu Departamento">
+                                </div>
+                            </div>
+
+                            <!-- Contato -->
+                            <div class="signature-form-section">
+                                <h3 class="signature-form-section-title">Contato</h3>
+                                
+                                <div class="signature-form-group">
+                                    <label for="signature-email" class="signature-form-label">E-mail</label>
+                                    <input type="text" id="signature-email" class="signature-form-input" placeholder="seu.email@empresa.com">
+                                </div>
+
+                                <div class="signature-form-group">
+                                    <label for="signature-phone" class="signature-form-label">Telefone</label>
+                                    <input type="text" id="signature-phone" class="signature-form-input" placeholder="+55 (11) 99999-9999">
+                                </div>
+                            </div>
+
+                            <!-- Opções -->
+                            <div class="signature-form-section">
+                                <label class="signature-form-checkbox">
+                                    <input type="checkbox" id="signature-default" class="signature-form-checkbox-input">
+                                    <span class="signature-form-checkbox-label">Usar como assinatura padrão</span>
+                                </label>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="signature-editor-actions">
+                                <button type="button" class="btn btn--primary" id="btn-save-signature">
+                                    <i class='bx bx-check'></i>
+                                    <span>Salvar</span>
+                                </button>
+                                <button type="button" class="btn btn--secondary" id="btn-cancel-signature">
+                                    <i class='bx bx-arrow-left'></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="button" class="btn btn--danger is-hidden" id="btn-delete-signature">
+                                    <i class='bx bx-trash'></i>
+                                    <span>Deletar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="signature-preview-section">
+                            <h3 class="signature-preview-title">Preview</h3>
+                            <div class="signature-preview-card" id="signature-preview-card"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
+
+        <!--========== MODAL ADICIONAR ANEXOS ==========-->
+        <div class="attachment-modal" id="attachment-modal">
+            <div class="attachment-modal__content">
+                <div class="attachment-modal__header">
+                    <h2 class="attachment-modal__title">Seus Arquivos</h2>
+                    <button type="button" class="attachment-modal__close" id="attachment-modal-close" aria-label="Fechar modal de anexos">
+                        <i class='bx bx-x'></i>
+                    </button>
+                </div>
+
+                <div class="attachment-modal__body">
+                    <!-- Breadcrumb e navegação dentro de pastas -->
+                    <div class="page__navigation is-hidden" id="attachment-folder-navigation">
+                        <div class="page__breadcrumb" id="attachment-breadcrumb-container"></div>
+                        <div class="page__folder-header">
+                            <h2 class="page__folder-title" id="attachment-folder-title"></h2>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar original (visível apenas na raiz) -->
+                    <div class="page__toolbar" id="attachment-root-toolbar">
+                        <div class="page__title-wrap">
+                            <h1 class="page__title">Todos os arquivos</h1>
+                            <p class="page__subtitle">Selecione os arquivos que deseja anexar.</p>
+                        </div>
+                    </div>
+
+                    <!-- Filtros e Pesquisa -->
+                    <div class="filters">
+                        <div class="filters__field">
+                            <i class='bx bx-search'></i>
+                            <input type="search" placeholder="Buscar por nome da pasta ou arquivo" class="filters__input" id="attachment-files-search" />
+                        </div>
+                        <select class="filters__select" aria-label="Filtrar por acesso" id="attachment-filter-access"></select>
+                        <select class="filters__select" aria-label="Filtrar por tipo" id="attachment-filter-type"></select>
+                        <select class="filters__select" aria-label="Filtrar por local" id="attachment-filter-location"></select>
+                        <div class="filters__date-wrapper">
+                            <select class="filters__select" aria-label="Filtrar por data de modificação" id="attachment-filter-modified"></select>
+                            <div class="date-range-picker is-hidden" id="attachment-date-range-picker">
+                                <div class="date-range-picker__header">Personalizado</div>
+                                <div class="date-range-picker__body">
+                                    <div class="date-range-picker__field">
+                                        <label class="date-range-picker__label">Depois de</label>
+                                        <input type="date" class="date-range-picker__input" id="attachment-date-from" style="color-scheme: light !important; background: white !important;" />
+                                    </div>
+                                    <div class="date-range-picker__field">
+                                        <label class="date-range-picker__label">Antes de</label>
+                                        <input type="date" class="date-range-picker__input" id="attachment-date-to" style="color-scheme: light !important; background: white !important;" />
+                                    </div>
+                                </div>
+                                <div class="date-range-picker__actions">
+                                    <button type="button" class="date-range-picker__btn date-range-picker__btn--cancel" id="attachment-date-range-cancel">Cancelar</button>
+                                    <button type="button" class="date-range-picker__btn date-range-picker__btn--apply" id="attachment-date-range-apply">Aplicar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Rápidos -->
+                    <div class="files-quick-filters">
+                        <button type="button" class="quick-filter-btn" id="attachment-filter-recent" aria-pressed="false">
+                            <i class='bx bx-time-five'></i>
+                            <span>Recentes</span>
+                        </button>
+                        <button type="button" class="quick-filter-btn" id="attachment-filter-favorites" aria-pressed="false">
+                            <i class='bx bx-star'></i>
+                            <span>Favoritos</span>
+                        </button>
+                    </div>
+
+                    <!-- Lista de Arquivos -->
+                    <div class="files-list" role="table" aria-label="Lista de arquivos para adicionar como anexo">
+                        <div class="files-list__head" role="row">
+                            <span class="files-list__select">
+                                <input type="checkbox" class="files-list__checkbox files-list__checkbox--master" id="attachment-select-all-files" aria-label="Selecionar todos os arquivos" />
+                            </span>
+                            <span>Nome</span>
+                            <span>Última modificação</span>
+                            <span>Tamanho</span>
+                            <span>Acesso</span>
+                            <span>Local</span>
+                        </div>
+                        <div id="attachment-files-list-body"></div>
+                    </div>
+                </div>
+
+                <!-- Footer com Botões de Ação -->
+                <div class="attachment-modal__footer">
+                    <button type="button" class="attachment-modal__btn attachment-modal__btn--secondary" id="attachment-modal-cancel">
+                        Cancelar
+                    </button>
+                    <button type="button" class="attachment-modal__btn attachment-modal__btn--primary" id="attachment-modal-add" disabled>
+                        <i class='bx bx-plus'></i>
+                        <span>Adicionar Anexos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--========== MODAL CONFIRMAÇÃO ==========-->
+        <div class="modal-overlay is-hidden" id="confirm-modal">
+            <div class="modal-container modal-container--confirm">
+                <button type="button" class="modal-close-btn" id="confirm-modal-close" aria-label="Fechar modal">
+                    <i class='bx bx-x'></i>
+                </button>
+                <h2 class="modal-title" id="confirm-modal-title">Confirmar ação</h2>
+                <p class="modal-message" id="confirm-modal-message">Deseja continuar?</p>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary" id="confirm-modal-cancel">Cancelar</button>
+                    <button type="button" class="btn btn--primary" id="confirm-modal-confirm">Confirmar</button>
+                </div>
+            </div>
+        </div>
 
         <!--========== MODAL VISUALIZAR FLUXO ==========-->
         <div class="modal-overlay is-hidden" id="workflow-modal">
@@ -633,6 +955,5 @@
 
         <!--========== MAIN JS ==========-->
         <script src="assets/js/script.js"></script>
-        <script src="assets/js/workflow-documents-page.js"></script>
     </body>
 </html>
