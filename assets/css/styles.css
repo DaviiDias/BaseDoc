@@ -5047,6 +5047,10 @@ img {
   background: #0284c7;
 }
 
+.personal-data-photo-input {
+  display: none;
+}
+
 .personal-data-divider {
   width: 1px;
   background: #e5e7eb;
@@ -5201,6 +5205,10 @@ img {
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb;
   justify-content: flex-start;
+}
+
+#form-actions {
+  display: none;
 }
 
 .personal-data-form__actions .btn {
