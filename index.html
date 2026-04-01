@@ -98,17 +98,8 @@
     
                         <div class="nav__items">
                             <h3 class="nav__subtitle">Menu</h3>
-    
-                            <a href="#" class="nav__link" data-panel="alertas">
-                                <i class='bx bx-bell nav__icon' ></i>
-                                <span class="nav__name">Alertas</span>
-                            </a>
 
-                            <a href="#" class="nav__link" data-panel="explorar">
-                                <i class='bx bx-compass nav__icon' ></i>
-                                <span class="nav__name">Explorar</span>
-                            </a>
-                            <a href="#" class="nav__link" data-panel="favoritos">
+                            <a href="#" class="nav__link nav__link--disabled" data-panel="favoritos" aria-disabled="true">
                                 <i class='bx bx-bookmark nav__icon' ></i>
                                 <span class="nav__name">Favoritos</span>
                             </a>
@@ -128,11 +119,7 @@
             <aside class="nav__panel" aria-label="Conteudo da pagina">
                 <div class="nav__panel-header">Componentes GED</div>
                 <div class="nav__panel-list">
-                    <a href="#" class="nav__panel-item is-active" data-view="todos-arquivos">
-                        <i class='bx bx-grid-alt'></i>
-                        <span>Todos os arquivos</span>
-                    </a>
-                    <a href="#" class="nav__panel-item" data-view="dashboard">
+                    <a href="#" class="nav__panel-item is-active" data-view="dashboard">
                         <i class='bx bx-chart'></i>
                         <span>Dashboard</span>
                     </a>
@@ -144,17 +131,13 @@
                         <i class='bx bx-shape-square'></i>
                         <span>Templates de Documentos</span>
                     </a>
-                    <a href="#" class="nav__panel-item" data-view="armazenamento-digital">
-                        <i class='bx bx-hdd'></i>
-                        <span>Armazenamento digital</span>
-                    </a>
                 </div>
             </aside>
         </div>
 
         <!--========== CONTENTS ==========-->
         <main class="content">
-            <section class="page is-active" data-view="todos-arquivos">
+            <section class="page" data-view="todos-arquivos">
                 <!-- Breadcrumb e navegação dentro de pastas -->
                 <div class="page__navigation is-hidden" id="folder-navigation">
                     <div class="page__breadcrumb" id="breadcrumb-container"></div>
@@ -323,7 +306,7 @@
                 </div>
             </section>
 
-            <section class="page" data-view="dashboard">
+            <section class="page is-active" data-view="dashboard">
                 <div class="dashboard">
                     <!-- Dashboard Header -->
                     <div class="dashboard__header">
@@ -697,6 +680,108 @@
                         <div class="signature-preview-section">
                             <h3 class="signature-preview-title">Preview</h3>
                             <div class="signature-preview-card" id="signature-preview-card"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DADOS PESSOAIS PAGE -->
+            <section class="page" data-view="dados-pessoais">
+                <div class="page__header">
+                    <h1 class="page__title">Dados Pessoais</h1>
+                    <p class="page__subtitle">Visualize e edite suas informações de perfil</p>
+                </div>
+
+                <div class="personal-data-container">
+                    <div class="personal-data-layout">
+                        <!-- Foto de Perfil à Esquerda -->
+                        <div class="personal-data-photo-section">
+                            <div class="personal-data-photo-frame">
+                                <img id="profilePhoto" src="assets/img/perfil.jpg" alt="Foto de perfil" class="personal-data-photo-image">
+                            </div>
+                            <button type="button" class="personal-data-photo-btn" id="edit-photo-btn">
+                                <i class="bx bx-camera"></i>
+                                <span>Editar foto</span>
+                            </button>
+                            <input type="file" id="photo-input" class="personal-data-photo-input" accept="image/*" style="display: none;">
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="personal-data-divider"></div>
+
+                        <!-- Informações à Direita -->
+                        <div class="personal-data-info-section">
+                            <form id="personal-data-form" class="personal-data-form">
+                                <!-- Informações de Perfil -->
+                                <div class="form-section">
+                                    <h2 class="form-section__title">Informações de Perfil</h2>
+                                    <div class="form-section__content">
+                                        <!-- Nome de Usuário (Readonly) -->
+                                        <div class="personal-data-form__group">
+                                            <label class="personal-data-field__label">Nome de usuário</label>
+                                            <input type="text" class="workflow__wizard-input" id="username-input" readonly value="usuario.nome">
+                                        </div>
+
+                                        <!-- Nome Completo -->
+                                        <div class="personal-data-form__group">
+                                            <label class="personal-data-field__label">Nome completo</label>
+                                            <input type="text" class="workflow__wizard-input" id="fullName-input" placeholder="Seu nome completo" value="João Silva">
+                                        </div>
+
+                                        <!-- E-mail (Readonly) -->
+                                        <div class="personal-data-form__group">
+                                            <label class="personal-data-field__label">E-mail</label>
+                                            <input type="text" class="workflow__wizard-input" id="email-input" readonly value="joao.silva@email.com">
+                                        </div>
+
+                                        <!-- Telefone -->
+                                        <div class="personal-data-form__group">
+                                            <label class="personal-data-field__label">Telefone</label>
+                                            <input type="text" class="workflow__wizard-input" id="phone-input" placeholder="(11) 98765-4321" value="(11) 98765-4321">
+                                        </div>
+
+                                        <!-- Senha -->
+                                        <div class="personal-data-form__group personal-data-form__group--password-section">
+                                            <h3 class="password-section__title">Alterar Senha</h3>
+                                            <div class="password-fields">
+                                                <!-- Senha Atual (Disabled) -->
+                                                <div class="personal-data-form__group">
+                                                    <label class="personal-data-field__label">Senha atual</label>
+                                                    <input type="password" class="workflow__wizard-input" id="current-password" placeholder="Sua senha atual" disabled value="••••••••">
+                                                </div>
+
+                                                <!-- Nova Senha (com icon de olho) -->
+                                                <div class="personal-data-form__group">
+                                                    <label class="personal-data-field__label">Nova senha</label>
+                                                    <div class="password-input-wrapper">
+                                                        <input type="password" class="workflow__wizard-input password-input" id="new-password" placeholder="Defina uma nova senha">
+                                                        <button type="button" class="password-toggle-btn" id="new-password-toggle" aria-label="Mostrar/ocultar nova senha">
+                                                            <i class="bx bx-hide"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Confirmar Nova Senha (com icon de olho) -->
+                                                <div class="personal-data-form__group">
+                                                    <label class="personal-data-field__label">Confirmar nova senha</label>
+                                                    <div class="password-input-wrapper">
+                                                        <input type="password" class="workflow__wizard-input password-input" id="confirm-password" placeholder="Confirme a nova senha">
+                                                        <button type="button" class="password-toggle-btn" id="confirm-password-toggle" aria-label="Mostrar/ocultar confirmação de senha">
+                                                            <i class="bx bx-hide"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botões de Ação -->
+                                <div class="personal-data-form__actions" id="form-actions" style="display: none;">
+                                    <button type="button" class="btn btn--secondary" id="discard-btn">Descartar alterações</button>
+                                    <button type="button" class="btn btn--primary" id="save-btn">Salvar alterações</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

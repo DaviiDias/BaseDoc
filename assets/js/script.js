@@ -212,11 +212,9 @@ const panelData = {
         sections: [
             {
                 items: [
-                    { icon: 'bx-grid-alt', label: 'Todos os arquivos', view: 'todos-arquivos', active: true },
-                    { icon: 'bx bx-layer', label: 'Dashboard', view: 'dashboard' },
+                    { icon: 'bx bx-layer', label: 'Dashboard', view: 'dashboard', active: true },
                     { icon: 'bx-transfer', label: 'Documentos pendentes', view: 'fluxo-trabalho' },
-                    { icon: 'bx-shape-square', label: 'Templates de Documentos', view: 'fluxo-templates' },
-                    { icon: 'bx-hdd', label: 'Armazenamento digital', view: 'armazenamento-digital' }
+                    { icon: 'bx-shape-square', label: 'Templates de Documentos', view: 'fluxo-templates' }
                 ]
             },
         ]
@@ -226,17 +224,15 @@ const panelData = {
         sections: [
             {
                 items: [
-                    { icon: 'bx-id-card', label: 'Dados pessoais', active: true },
+                    { icon: 'bx-id-card', label: 'Dados pessoais', active: true, view: 'dados-pessoais' },
                     { icon: 'bx-pen', label: 'Assinaturas', view: 'assinaturas' },
-                    { icon: 'bx-lock-alt', label: 'Seguranca' },
-                    { icon: 'bx-badge-check', label: 'Permissoes' }
+                    { icon: 'bx-badge-check', label: 'Permissoes', disabled: true }
                 ]
             },
             {
                 title: 'Preferencias',
                 items: [
-                    { icon: 'bx-cog', label: 'Configuracoes' },
-                    { icon: 'bx-bell', label: 'Notificacoes' }
+                    { icon: 'bx-cog', label: 'Configuracoes', disabled: true }
                 ]
             }
         ]
@@ -246,9 +242,8 @@ const panelData = {
         sections: [
             {
                 items: [
-                    { icon: 'bx-folder', label: 'Todas as pastas', active: true },
-                    { icon: 'bx-folder-open', label: 'Recentes' },
-                    { icon: 'bx-folder-plus', label: 'Criar nova pasta' }
+                    { icon: 'bx-grid-alt', label: 'Todos os arquivos', view: 'todos-arquivos', active: true },
+                    { icon: 'bx-hdd', label: 'Armazenamento digital', disabled: true }
                 ]
             }
         ]
@@ -259,8 +254,8 @@ const panelData = {
             {
                 items: [
                     { icon: 'bx-envelope', label: 'Novo E-mail', view: 'novo-email', active: true },
-                    { icon: 'bx-archive', label: 'Caixa de entrada' },
-                    { icon: 'bx-send', label: 'Enviados' }
+                    { icon: 'bx-archive', label: 'Caixa de entrada', disabled: true },
+                    { icon: 'bx-send', label: 'Enviados', disabled: true }
                 ]
             }
         ]
@@ -1157,10 +1152,14 @@ function createPanelItem(item) {
     const link = document.createElement('a')
     link.href = '#'
     link.className = 'nav__panel-item'
-    if (item.view) {
+    if (item.disabled) {
+        link.classList.add('nav__panel-item--disabled')
+        link.setAttribute('aria-disabled', 'true')
+    }
+    if (item.view && !item.disabled) {
         link.dataset.view = item.view
     }
-    if (item.active) {
+    if (item.active && !item.disabled) {
         link.classList.add('is-active')
     }
 
@@ -1204,6 +1203,15 @@ function showPage(viewKey) {
                 editor.innerHTML = signatureDiv
             }
         }, 100)
+    }
+
+    if (viewKey === 'dados-pessoais') {
+        setTimeout(() => {
+            setupPersonalDataEditMode()
+            setupEditPhotoButton()
+            setupPasswordToggle()
+            detectFormChanges()
+        }, 0)
     }
 
     if (viewKey === 'fluxo-templates') {
@@ -1255,6 +1263,11 @@ function renderPanel(key) {
 }
 
 function colorLink(event){
+    if (this.classList.contains('nav__link--disabled')) {
+        event.preventDefault()
+        return
+    }
+
     const panelKey = this.dataset.panel
     if (panelKey) {
         event.preventDefault()
@@ -1276,6 +1289,11 @@ if (navPanel) {
         }
 
         event.preventDefault()
+
+        if (panelItem.classList.contains('nav__panel-item--disabled')) {
+            return
+        }
+
         navPanel.querySelectorAll('.nav__panel-item').forEach((item) => item.classList.remove('is-active'))
         panelItem.classList.add('is-active')
 
@@ -1290,7 +1308,7 @@ if (navPanel) {
 const initial = document.querySelector('.nav__link.active[data-panel]')
 if (initial) {
     renderPanel(initial.dataset.panel)
-    showPage('todos-arquivos')
+    showPage('dashboard')
 }
 
 initTodosArquivosMocks()
@@ -5730,5 +5748,709 @@ if (document.readyState === 'loading') {
     })
 } else {
     EmailComposer.init()
+}
+
+/*==================== PERSONAL DATA PAGE ====================*/
+/**
+ * Personal Data Management Module
+ * Handles user personal and contact information
+ */
+
+const personalDataStorageKey = 'ged-personal-data'
+const mockPersonalDataNew = {
+    username: 'usuario.nome',
+    fullName: 'João Silva Santos',
+    email: 'joao.silva@empresa.com',
+    phone: '(11) 98765-4321',
+    password: 'senha123456'
+}
+
+function loadPersonalDataNew() {
+    try {
+        const stored = localStorage.getItem(personalDataStorageKey)
+        if (stored) return JSON.parse(stored)
+    } catch (error) {
+        console.error('Error loading personal data:', error)
+    }
+    return mockPersonalDataNew
+}
+
+function setupPersonalDataEditMode() {
+    const form = document.getElementById('personal-data-form')
+    if (!form) return
+
+    // Load data
+    const personData = loadPersonalDataNew()
+    window.originalPersonalData = { ...personData }
+
+    // Populate inputs with data
+    const fullNameInput = document.getElementById('fullName-input')
+    const emailInput = document.getElementById('email-input')
+    const phoneInput = document.getElementById('phone-input')
+
+    if (fullNameInput) fullNameInput.value = personData.fullName || 'João Silva'
+    if (emailInput) emailInput.value = personData.email || 'joao.silva@email.com'
+    if (phoneInput) phoneInput.value = personData.phone || '(11) 98765-4321'
+
+    // Setup password toggles
+    setupPasswordToggle()
+
+    // Setup change detection and form actions
+    setupPersonalDataChangeDetection(form)
+
+    // Setup save/discard buttons
+    setupFormActions(form)
+    
+    // Hide buttons initially
+    detectFormChanges()
+}
+
+// Removed duplicate setupPasswordToggles - using setupPasswordToggle instead
+
+function togglePasswordVisibility(inputEl, buttonEl) {
+    if (!inputEl || !buttonEl) return
+    
+    const isPassword = inputEl.type === 'password'
+    inputEl.type = isPassword ? 'text' : 'password'
+    
+    const icon = buttonEl.querySelector('i')
+    if (icon) {
+        if (isPassword) {
+            icon.classList.remove('bx-hide')
+            icon.classList.add('bx-show')
+        } else {
+            icon.classList.remove('bx-show')
+            icon.classList.add('bx-hide')
+        }
+    }
+}
+
+function setupPersonalDataChangeDetection(form) {
+    const fullNameInput = document.getElementById('fullName-input')
+    const phoneInput = document.getElementById('phone-input')
+    const newPasswordInput = document.getElementById('new-password')
+    const confirmPasswordInput = document.getElementById('confirm-password')
+
+    const checkChanges = () => {
+        const formActions = document.getElementById('form-actions')
+        
+        const fullNameChanged = fullNameInput && fullNameInput.value !== window.originalPersonalData.fullName
+        const phoneChanged = phoneInput && phoneInput.value !== window.originalPersonalData.phone
+        const passwordChanged = (newPasswordInput && newPasswordInput.value !== '') || (confirmPasswordInput && confirmPasswordInput.value !== '')
+
+        if (fullNameChanged || phoneChanged || passwordChanged) {
+            formActions.style.display = 'flex'
+        } else {
+            formActions.style.display = 'none'
+        }
+    }
+
+    if (fullNameInput) {
+        fullNameInput.addEventListener('input', () => {
+            fullNameInput.classList.remove('is-error')
+            checkChanges()
+        })
+    }
+
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            // Filter only numbers, ( ) and -
+            let value = e.target.value
+            value = value.replace(/[^0-9()\-\s]/g, '')
+            e.target.value = value
+            phoneInput.classList.remove('is-error')
+            checkChanges()
+        })
+    }
+
+    if (newPasswordInput) {
+        newPasswordInput.addEventListener('input', () => {
+            newPasswordInput.classList.remove('is-error')
+            checkChanges()
+        })
+    }
+
+    if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('input', () => {
+            confirmPasswordInput.classList.remove('is-error')
+            checkChanges()
+        })
+    }
+}
+
+function showFormActions() {
+    const actions = document.getElementById('form-actions')
+    if (actions) {
+        actions.style.display = 'flex'
+    }
+}
+
+function hideFormActions() {
+    const actions = document.getElementById('form-actions')
+    if (actions) {
+        actions.style.display = 'none'
+    }
+}
+
+function setupFormActions(form) {
+    const saveBtn = document.getElementById('save-btn')
+    const discardBtn = document.getElementById('discard-btn')
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            savePersonalDataChanges()
+        })
+    }
+
+    if (discardBtn) {
+        discardBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            discardPersonalDataChanges()
+        })
+    }
+}
+
+function savePersonalDataChanges() {
+    const form = document.getElementById('personal-data-form')
+    if (!form) return
+
+    const fullNameInput = document.getElementById('fullName-input')
+    const phoneInput = document.getElementById('phone-input')
+    const newPasswordInput = document.getElementById('new-password')
+    const confirmPasswordInput = document.getElementById('confirm-password')
+    const profilePhoto = document.getElementById('profilePhoto')
+
+    let isValid = true
+    const errors = []
+
+    // Validate full name
+    const fullNameValue = fullNameInput?.value.trim()
+    if (!fullNameValue) {
+        isValid = false
+        errors.push('Nome completo é obrigatório')
+        if (fullNameInput) fullNameInput.classList.add('is-error')
+    } else {
+        if (fullNameInput) fullNameInput.classList.remove('is-error')
+    }
+
+    // Validate phone
+    const phoneValue = phoneInput?.value.trim()
+    if (!phoneValue) {
+        isValid = false
+        errors.push('Telefone é obrigatório')
+        if (phoneInput) phoneInput.classList.add('is-error')
+    } else {
+        if (phoneInput) phoneInput.classList.remove('is-error')
+    }
+
+    // Validate passwords if being changed
+    if (newPasswordInput?.value || confirmPasswordInput?.value) {
+        if (!newPasswordInput.value) {
+            isValid = false
+            errors.push('Nova senha é obrigatória')
+            newPasswordInput.classList.add('is-error')
+        } else if (newPasswordInput.value.length < 6) {
+            isValid = false
+            errors.push('Nova senha deve ter no mínimo 6 caracteres')
+            newPasswordInput.classList.add('is-error')
+        } else {
+            newPasswordInput.classList.remove('is-error')
+        }
+
+        if (!confirmPasswordInput.value) {
+            isValid = false
+            errors.push('Confirmação de senha é obrigatória')
+            confirmPasswordInput.classList.add('is-error')
+        } else if (newPasswordInput.value !== confirmPasswordInput.value) {
+            isValid = false
+            errors.push('As senhas não conferem')
+            confirmPasswordInput.classList.add('is-error')
+        } else {
+            confirmPasswordInput.classList.remove('is-error')
+        }
+    }
+
+    if (!isValid) {
+        showAppAlert({
+            type: 'error',
+            title: 'Erros na validação',
+            message: errors.join('\n')
+        })
+        return
+    }
+
+    // Build updated data
+    const updatedData = {
+        ...window.originalPersonalData,
+        fullName: fullNameValue,
+        phone: phoneValue
+    }
+
+    if (newPasswordInput?.value) {
+        updatedData.password = newPasswordInput.value
+    }
+
+    // Save to storage
+    try {
+        localStorage.setItem(personalDataStorageKey, JSON.stringify(updatedData))
+        window.originalPersonalData = { ...updatedData }
+
+        if (profilePhoto?.src) {
+            localStorage.setItem('ged-profile-photo', profilePhoto.src)
+            window.originalProfilePhoto = profilePhoto.src
+        }
+
+        // Reset form
+        if (fullNameInput) fullNameInput.value = updatedData.fullName
+        if (phoneInput) phoneInput.value = updatedData.phone
+        if (newPasswordInput) newPasswordInput.value = ''
+        if (confirmPasswordInput) confirmPasswordInput.value = ''
+
+        hideFormActions()
+
+        showAppAlert({
+            type: 'success',
+            title: 'Sucesso',
+            message: 'Suas alterações foram salvas com sucesso!'
+        })
+    } catch (error) {
+        showAppAlert({
+            type: 'error',
+            title: 'Erro',
+            message: 'Não foi possível salvar as alterações. Tente novamente.'
+        })
+    }
+}
+
+function discardPersonalDataChanges() {
+    const fullNameInput = document.getElementById('fullName-input')
+    const phoneInput = document.getElementById('phone-input')
+    const newPasswordInput = document.getElementById('new-password')
+    const confirmPasswordInput = document.getElementById('confirm-password')
+    const profilePhoto = document.getElementById('profilePhoto')
+    const photoInput = document.getElementById('photo-input')
+
+    // Restore original values
+    if (fullNameInput) {
+        fullNameInput.value = window.originalPersonalData.fullName
+        fullNameInput.classList.remove('is-error')
+    }
+    if (phoneInput) {
+        phoneInput.value = window.originalPersonalData.phone
+        phoneInput.classList.remove('is-error')
+    }
+    if (newPasswordInput) {
+        newPasswordInput.value = ''
+        newPasswordInput.classList.remove('is-error')
+        newPasswordInput.type = 'password'
+    }
+    if (confirmPasswordInput) {
+        confirmPasswordInput.value = ''
+        confirmPasswordInput.classList.remove('is-error')
+        confirmPasswordInput.type = 'password'
+    }
+
+    // Restore original photo
+    if (profilePhoto && window.originalProfilePhoto) {
+        profilePhoto.src = window.originalProfilePhoto
+    }
+
+    if (photoInput) {
+        photoInput.value = ''
+    }
+
+    // Reset toggle icons
+    const newPasswordToggle = document.getElementById('new-password-toggle')
+    const confirmPasswordToggle = document.getElementById('confirm-password-toggle')
+    
+    if (newPasswordToggle?.querySelector('i')) {
+        newPasswordToggle.querySelector('i').classList.remove('bx-show')
+        newPasswordToggle.querySelector('i').classList.add('bx-hide')
+    }
+    if (confirmPasswordToggle?.querySelector('i')) {
+        confirmPasswordToggle.querySelector('i').classList.remove('bx-show')
+        confirmPasswordToggle.querySelector('i').classList.add('bx-hide')
+    }
+
+    hideFormActions()
+}
+
+function setupEditPhotoButton() {
+    const editPhotoBtn = document.getElementById('edit-photo-btn')
+    const photoInput = document.getElementById('photo-input')
+    const profilePhoto = document.getElementById('profilePhoto')
+
+    if (!editPhotoBtn || !photoInput || !profilePhoto) {
+        return
+    }
+
+    const savedPhoto = localStorage.getItem('ged-profile-photo')
+    if (savedPhoto) {
+        profilePhoto.src = savedPhoto
+    }
+
+    if (!window.originalProfilePhoto) {
+        window.originalProfilePhoto = profilePhoto.src
+    }
+
+    if (!editPhotoBtn.dataset.bound) {
+        editPhotoBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            photoInput.click()
+        })
+        editPhotoBtn.dataset.bound = 'true'
+    }
+
+    if (!photoInput.dataset.bound) {
+        photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0]
+        if (!file) {
+            return
+        }
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            profilePhoto.src = event.target.result
+            detectFormChanges()
+        }
+        reader.readAsDataURL(file)
+    })
+        photoInput.dataset.bound = 'true'
+    }
+}
+
+/**
+ * Setup password visibility toggle buttons
+ */
+function setupPasswordToggle() {
+    const newPasswordToggle = document.getElementById('new-password-toggle')
+    const newPasswordInput = document.getElementById('new-password')
+    const confirmPasswordToggle = document.getElementById('confirm-password-toggle')
+    const confirmPasswordInput = document.getElementById('confirm-password')
+
+    // Current password always locked/hidden
+    const currentPasswordInput = document.getElementById('current-password')
+    if (currentPasswordInput) {
+        currentPasswordInput.setAttribute('disabled', 'disabled')
+        currentPasswordInput.type = 'password'
+    }
+
+    const togglePasswordVisibility = (input, button) => {
+        if (!input || !button) return
+
+        const icon = button.querySelector('i')
+        if (!icon) return
+
+        const showPassword = input.type === 'password'
+        input.type = showPassword ? 'text' : 'password'
+
+        icon.classList.toggle('bx-show', showPassword)
+        icon.classList.toggle('bx-hide', !showPassword)
+        button.setAttribute('aria-label', showPassword ? 'Ocultar senha' : 'Mostrar senha')
+
+        detectFormChanges()
+    }
+
+    const bindToggle = (button, input) => {
+        if (!button || !input) return
+
+        // Reset visual state every time page is opened
+        input.type = 'password'
+        const icon = button.querySelector('i')
+        if (icon) {
+            icon.classList.remove('bx-show')
+            icon.classList.add('bx-hide')
+        }
+
+        if (button.dataset.bound === 'true') return
+
+        button.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            togglePasswordVisibility(input, button)
+        })
+
+        button.dataset.bound = 'true'
+    }
+
+    bindToggle(newPasswordToggle, newPasswordInput)
+    bindToggle(confirmPasswordToggle, confirmPasswordInput)
+
+    if (newPasswordInput && newPasswordInput.dataset.bound !== 'true') {
+        newPasswordInput.addEventListener('input', detectFormChanges)
+        newPasswordInput.dataset.bound = 'true'
+    }
+
+    if (confirmPasswordInput && confirmPasswordInput.dataset.bound !== 'true') {
+        confirmPasswordInput.addEventListener('input', detectFormChanges)
+        confirmPasswordInput.dataset.bound = 'true'
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupPersonalDataEditMode()
+    setupEditPhotoButton()
+    setupPasswordToggle()
+    detectFormChanges()
+})
+
+/**
+ * Save personal data to localStorage
+ */
+function savePersonalDataToStorage(data) {
+    try {
+        localStorage.setItem(personalDataStorageKey, JSON.stringify(data))
+        return true
+    } catch (error) {
+        console.error('Error saving personal data:', error)
+        return false
+    }
+}
+
+/**
+ * Validate personal data form
+ */
+function validatePersonalDataForm(formData) {
+    const errors = []
+
+    // Validate name
+    if (!formData.name || !formData.name.trim()) {
+        errors.push('Nome de usuário')
+    }
+
+    // Validate full name
+    if (!formData.fullName || !formData.fullName.trim()) {
+        errors.push('Nome completo')
+    }
+
+    // Validate email
+    if (!formData.email || !formData.email.trim()) {
+        errors.push('E-mail')
+    } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(formData.email)) {
+            errors.push('E-mail inválido')
+        }
+    }
+
+    // Validate job title
+    if (!formData.jobTitle || !formData.jobTitle.trim()) {
+        errors.push('Cargo')
+    }
+
+    // Validate department
+    if (!formData.department || !formData.department.trim()) {
+        errors.push('Departamento')
+    }
+
+    // Validate phone
+    if (!formData.phone || !formData.phone.trim()) {
+        errors.push('Telefone')
+    }
+
+    // Validate passwords if provided
+    if (formData.password || formData.passwordConfirm) {
+        if (formData.password !== formData.passwordConfirm) {
+            errors.push('As senhas não conferem')
+        }
+        if (formData.password && formData.password.length < 8) {
+            errors.push('A senha deve ter no mínimo 8 caracteres')
+        }
+    }
+
+    return errors
+}
+
+/**
+ * Setup personal data form events
+ */
+function setupPersonalDataEvents(form) {
+    const passwordToggles = document.querySelectorAll('.personal-data-toggle-password')
+    const saveBtn = form.querySelector('[data-action="save"]')
+    const discardBtn = form.querySelector('[data-action="discard"]')
+
+    // Setup password toggle buttons
+    passwordToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault()
+            
+            const wrapper = toggle.closest('.personal-data-input-wrapper')
+            const input = wrapper.querySelector('input')
+            const icon = toggle.querySelector('i')
+
+            if (input.type === 'password') {
+                input.type = 'text'
+                icon.className = 'bx bx-hide'
+                toggle.setAttribute('aria-label', 'Ocultar senha')
+            } else {
+                input.type = 'password'
+                icon.className = 'bx bx-show'
+                toggle.setAttribute('aria-label', 'Mostrar senha')
+            }
+        })
+    })
+
+    // Setup save button
+    if (saveBtn) {
+        saveBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            savePersonalData(form)
+        })
+    }
+
+    // Setup discard button
+    if (discardBtn) {
+        discardBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            discardPersonalData()
+        })
+    }
+
+    // Clear error states when typing and detect changes
+    const inputs = form.querySelectorAll('input, textarea')
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('is-error')
+            detectFormChanges()
+        })
+    })
+}
+
+/**
+ * Save personal data
+ */
+function savePersonalData(form) {
+    // Get form data
+    const formData = {
+        name: document.getElementById('personal-data-name').value,
+        fullName: document.getElementById('personal-data-full-name').value,
+        email: document.getElementById('personal-data-email').value,
+        jobTitle: document.getElementById('personal-data-job-title').value,
+        department: document.getElementById('personal-data-department').value,
+        phone: document.getElementById('personal-data-phone').value,
+        password: document.getElementById('personal-data-password').value,
+        passwordConfirm: document.getElementById('personal-data-password-confirm').value
+    }
+
+    // Validate form
+    const errors = validatePersonalDataForm(formData)
+    
+    // Clear previous errors
+    form.querySelectorAll('input, textarea').forEach(input => {
+        input.classList.remove('is-error')
+    })
+
+    if (errors.length > 0) {
+        // Mark error fields
+        errors.forEach(error => {
+            if (error.includes('Nome de usuário')) {
+                document.getElementById('personal-data-name').classList.add('is-error')
+            } else if (error.includes('Nome completo')) {
+                document.getElementById('personal-data-full-name').classList.add('is-error')
+            } else if (error.includes('E-mail')) {
+                document.getElementById('personal-data-email').classList.add('is-error')
+            } else if (error.includes('Cargo')) {
+                document.getElementById('personal-data-job-title').classList.add('is-error')
+            } else if (error.includes('Departamento')) {
+                document.getElementById('personal-data-department').classList.add('is-error')
+            } else if (error.includes('Telefone')) {
+                document.getElementById('personal-data-phone').classList.add('is-error')
+            }
+        })
+
+        // Show alert
+        showAppAlert({
+            type: 'danger',
+            title: 'Erro na validação',
+            message: `Por favor, corrija: ${errors.join(', ')}`
+        })
+
+        // Scroll to first error field
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        return
+    }
+
+    // Save to localStorage
+    const success = savePersonalDataToStorage(formData)
+
+    if (success) {
+        showAppAlert({
+            type: 'success',
+            title: 'Dados salvos',
+            message: 'Suas informações pessoais foram atualizadas com sucesso.'
+        })
+
+        // Clear password fields
+        document.getElementById('personal-data-password').value = ''
+        document.getElementById('personal-data-password-confirm').value = ''
+    } else {
+        showAppAlert({
+            type: 'danger',
+            title: 'Erro ao salvar',
+            message: 'Não foi possível salvar as informações. Tente novamente.'
+        })
+    }
+}
+
+/**
+ * Discard personal data changes
+ */
+function discardPersonalData() {
+    const form = document.getElementById('personal-data-form')
+    if (!form) return
+
+    // Reload data from storage
+    const savedData = loadPersonalData()
+    
+    // Reset form with saved data
+    document.getElementById('personal-data-name').value = savedData.name || ''
+    document.getElementById('personal-data-full-name').value = savedData.fullName || ''
+    document.getElementById('personal-data-email').value = savedData.email || ''
+    document.getElementById('personal-data-job-title').value = savedData.jobTitle || ''
+    document.getElementById('personal-data-department').value = savedData.department || ''
+    document.getElementById('personal-data-phone').value = savedData.phone || ''
+    document.getElementById('personal-data-password').value = ''
+    document.getElementById('personal-data-password-confirm').value = ''
+
+    // Clear error states
+    form.querySelectorAll('input, textarea').forEach(input => {
+        input.classList.remove('is-error')
+    })
+
+    showAppAlert({
+        type: 'info',
+        title: 'Alterações descartadas',
+        message: 'O formulário foi restaurado com as informações salvas.'
+    })
+}
+
+/**
+ * Detect changes in personal data form and show/hide save/discard buttons
+ */
+function detectFormChanges() {
+    const form = document.getElementById('personal-data-form')
+    if (!form) return
+
+    const fullNameInput = document.getElementById('fullName-input')
+    const phoneInput = document.getElementById('phone-input')
+    const newPasswordInput = document.getElementById('new-password')
+    const confirmPasswordInput = document.getElementById('confirm-password')
+    const profilePhoto = document.getElementById('profilePhoto')
+    const actions = document.getElementById('form-actions')
+
+    if (!actions) return
+
+    const savedData = window.originalPersonalData || loadPersonalDataNew()
+    const savedPhoto = window.originalProfilePhoto || profilePhoto?.src || ''
+
+    const hasChanges =
+        (fullNameInput?.value || '') !== (savedData.fullName || '') ||
+        (phoneInput?.value || '') !== (savedData.phone || '') ||
+        (newPasswordInput?.value || '') !== '' ||
+        (confirmPasswordInput?.value || '') !== '' ||
+        (profilePhoto?.src || '') !== savedPhoto
+
+    actions.style.display = hasChanges ? 'flex' : 'none'
 }
 
