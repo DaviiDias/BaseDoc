@@ -1815,6 +1815,163 @@ const workflowModelFieldCatalog = {
     }
 }
 
+const workflowSystemMetadataCatalog = [
+    {
+        id: 'identificacao-signatarios',
+        title: 'Identificação de Signatários',
+        required: true,
+        fields: [
+            'Outros Signatários - Email',
+            'Outros Signatários - Nome',
+            'Outros Signatários do Cliente - Email',
+            'Outros Signatários do Cliente - Nome',
+            'Representante Legal 1 - Email',
+            'Representante Legal 1 - Nome',
+            'Representante Legal 2 - Email',
+            'Representante Legal 2 - Nome',
+            'Representante Legal do Cliente 1 - Email',
+            'Representante Legal do Cliente 1 - Nome',
+            'Representante Legal do Cliente 2 - Email',
+            'Representante Legal do Cliente 2 - Nome'
+        ]
+    },
+    {
+        id: 'informacoes-contrato',
+        title: 'Informações do Contrato',
+        required: true,
+        fields: [
+            'CLM ID',
+            'CNPJ Cliente',
+            'CNPJ Empresa',
+            'Contrato Migrado',
+            'CPF Cliente',
+            'Data da Assinatura',
+            'Data de Envio para Assinatura',
+            'Data de Fim da Vigência',
+            'Data de Início da Vigência',
+            'E-mail Revisor Externo',
+            'Nome do Cliente',
+            'Nome Revisor Externo',
+            'Razão Social Cliente',
+            'Razão Social Empresa',
+            'Status',
+            'Tipo da Minuta'
+        ]
+    },
+    {
+        id: 'informacoes-gerais',
+        title: 'Informações Gerais',
+        required: true,
+        fields: [
+            '#Identificador CLM',
+            'Cláusula de Alteração de Controle',
+            'Contratante',
+            'Email do Solicitante',
+            'Modelo',
+            'Nome da Empresa',
+            'Nome do Documento',
+            'Nome do Solicitante',
+            'Número da Pasta',
+            'Solicitante possui acesso ao CLM?',
+            'Título',
+            'Unidade de Negócio'
+        ]
+    },
+    {
+        id: 'informacoes-relatorios',
+        title: 'Informações para relatórios',
+        required: true,
+        fields: [
+            'BMU',
+            'Data de Solicitação',
+            'Empresa Contratada',
+            'Tipo de Minuta',
+            'Usuário Solicitante'
+        ]
+    },
+    {
+        id: 'informacoes-sistemicas',
+        title: 'Informações Sistêmicas',
+        required: false,
+        fields: [
+            '# do Documento'
+        ]
+    },
+    {
+        id: 'juridico',
+        title: 'Jurídico',
+        required: false,
+        fields: [
+            'Anexos presentes no documento?',
+            'Há cláusula de alteração de controle?'
+        ]
+    },
+    {
+        id: 'status-processo',
+        title: 'Status do Processo',
+        required: false,
+        fields: [
+            'Solicitante',
+            'Status'
+        ]
+    },
+    {
+        id: 'testemunhas',
+        title: 'Testemunhas',
+        required: false,
+        fields: [
+            'Documento Testemunha 1',
+            'Documento Testemunha 2',
+            'E-mail Testemunha 1',
+            'E-mail Testemunha 2',
+            'Nome Testemunha 1',
+            'Nome Testemunha 2'
+        ]
+    },
+    {
+        id: 'troca-controle-acionario',
+        title: 'Troca de Controle Acionário',
+        required: false,
+        fields: [
+            'Informação',
+            'Possui cláusula de alteração de controle acionário'
+        ]
+    },
+    {
+        id: 'vigencia-sistemica',
+        title: 'Vigência',
+        required: false,
+        fields: [
+            'Data de Fim',
+            'Data de Início',
+            'Tipo de Vigência'
+        ]
+    },
+    {
+        id: 'detalhes-acordo-clm',
+        title: 'Detalhes do acordo do CLM',
+        required: false,
+        fields: [
+            'Assinado por todas as partes',
+            'Aviso de rescisão',
+            'Data de Expiração',
+            'Data de Início da Vigência',
+            'Data do aviso de rescisão',
+            'ID da parte',
+            'ID do acordo',
+            'Nome',
+            'Parte',
+            'Período de Vigência da Renovação',
+            'Renovação automática',
+            'Solicitado por',
+            'Tipo',
+            'Valor'
+        ]
+    }
+]
+
+const workflowDefaultMetadataGroupIds = workflowSystemMetadataCatalog.map((group) => group.id)
+
 const workflowClauseCatalog = [
     {
         id: 'partes',
@@ -1912,6 +2069,7 @@ const workflowMockSeed = {
                 { id: 9, nome: 'Execução / Publicação' }
             ],
             customExtras: [],
+            metadataGroups: workflowDefaultMetadataGroupIds,
             clauses: [
                 { clauseId: 'partes', values: {} },
                 { clauseId: 'objeto-servico', values: {} },
@@ -1936,6 +2094,7 @@ const workflowState = {
     customExtrasByModel: {},
     documentsByModel: {},
     selectedTemplateFieldsByModel: {},
+    selectedMetadataGroupsByModel: {},
     selectedClausesByModel: {},
     activeClauseByModel: {},
     clauseFormEnabledByModel: {},
@@ -2087,6 +2246,15 @@ function ensureWorkflowModelState(modelKey) {
     if (!workflowState.selectedTemplateStageIdsByModel[modelKey]) {
         const defaultStages = getWorkflowStagesForModel(modelKey).map((stage) => stage.id)
         workflowState.selectedTemplateStageIdsByModel[modelKey] = new Set(defaultStages)
+    }
+
+    if (!workflowState.selectedMetadataGroupsByModel[modelKey]) {
+        workflowState.selectedMetadataGroupsByModel[modelKey] = new Set(workflowDefaultMetadataGroupIds)
+    } else if (!(workflowState.selectedMetadataGroupsByModel[modelKey] instanceof Set)) {
+        const restoredMetadata = Array.isArray(workflowState.selectedMetadataGroupsByModel[modelKey])
+            ? workflowState.selectedMetadataGroupsByModel[modelKey]
+            : workflowDefaultMetadataGroupIds
+        workflowState.selectedMetadataGroupsByModel[modelKey] = new Set(restoredMetadata)
     }
 
     if (typeof workflowState.templateNameByModel[modelKey] !== 'string') {
@@ -2252,6 +2420,31 @@ function getWorkflowTemplateFieldList() {
     return allFields.filter((fieldName) => fieldName.toLowerCase().includes(searchValue))
 }
 
+function getWorkflowSelectedMetadataGroupIds(modelKey) {
+    const currentSelection = workflowState.selectedMetadataGroupsByModel[modelKey]
+    if (currentSelection instanceof Set) {
+        return currentSelection
+    }
+
+    const restoredSelection = Array.isArray(currentSelection)
+        ? currentSelection
+        : workflowDefaultMetadataGroupIds
+
+    const normalizedSelection = new Set(restoredSelection)
+    workflowState.selectedMetadataGroupsByModel[modelKey] = normalizedSelection
+    return normalizedSelection
+}
+
+function getWorkflowSelectedMetadataGroups(modelKey) {
+    const selectedIds = getWorkflowSelectedMetadataGroupIds(modelKey)
+    return workflowSystemMetadataCatalog.filter((group) => selectedIds.has(group.id))
+}
+
+function getWorkflowSelectedMetadataFieldCount(modelKey) {
+    return getWorkflowSelectedMetadataGroups(modelKey)
+        .reduce((total, group) => total + group.fields.length, 0)
+}
+
 function renderWorkflowTemplateContent() {
     const container = workflowRefs.templateContent
     if (!container) return
@@ -2263,6 +2456,9 @@ function renderWorkflowTemplateContent() {
     const availableStages = getWorkflowStagesForModel(modelKey)
     const selectedStageIds = workflowState.selectedTemplateStageIdsByModel[modelKey] || new Set()
     const selectedClauses = getCurrentModelSelectedClauses()
+    const selectedMetadataGroupIds = getWorkflowSelectedMetadataGroupIds(modelKey)
+    const selectedMetadataGroups = getWorkflowSelectedMetadataGroups(modelKey)
+    const selectedMetadataFieldCount = getWorkflowSelectedMetadataFieldCount(modelKey)
     const templatesForModel = workflowState.savedFlows
         .filter((flow) => flow.model === modelKey)
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -2306,6 +2502,23 @@ function renderWorkflowTemplateContent() {
         }).join('')
         : '<p class="workflow__hint">Nenhuma cláusula selecionada para este template.</p>'
 
+    const metadataGroupsHtml = workflowSystemMetadataCatalog.map((group) => {
+        const checked = selectedMetadataGroupIds.has(group.id) ? 'checked' : ''
+        const disabled = group.required ? 'disabled' : ''
+        const requiredTag = group.required ? '<span class="workflow__metadata-chip">Obrigatório</span>' : ''
+
+        return `
+            <label class="workflow__metadata-item">
+                <input type="checkbox" data-template-metadata-group="${group.id}" ${checked} ${disabled}>
+                <span class="workflow__metadata-info">
+                    <strong>${group.title}</strong>
+                    <small>${group.fields.length} campo(s)</small>
+                </span>
+                ${requiredTag}
+            </label>
+        `
+    }).join('')
+
     if (workflowRefs.templateNewButton) {
         workflowRefs.templateNewButton.textContent = editorMode === 'create' ? 'Cancelar criação' : 'Criar novo template'
     }
@@ -2345,7 +2558,7 @@ function renderWorkflowTemplateContent() {
                 >
                 ` : `
                 <p class="workflow__template-note">${modeHint}</p>
-                <p class="workflow__template-note">Modelo: <strong>${modelLabel}</strong> • Steps selecionados: <strong>${selectedStageIds.size}</strong> • Cláusulas: <strong>${selectedClauses.length}</strong> • Volume: <strong>${catalogItem?.volume ?? '-'}</strong></p>
+                <p class="workflow__template-note">Modelo: <strong>${modelLabel}</strong> • Steps selecionados: <strong>${selectedStageIds.size}</strong> • Cláusulas: <strong>${selectedClauses.length}</strong> • Metadados CLM: <strong>${selectedMetadataGroups.length} grupos / ${selectedMetadataFieldCount} campos</strong> • Volume: <strong>${catalogItem?.volume ?? '-'}</strong></p>
                 `}
             </div>
             <div class="workflow__template-control workflow__template-control--save">
@@ -2365,6 +2578,13 @@ function renderWorkflowTemplateContent() {
                 <div class="workflow__section-title">Cláusulas selecionadas no template</div>
                 <p class="workflow__section-subtitle">Adicione ou remova cláusulas sem preencher dados do documento.</p>
                 <div id="workflow-selected-clauses" class="workflow__selected">${clausesHtml}</div>
+
+                <div class="workflow__metadata-card">
+                    <div class="workflow__section-title">Schema mestre CLM</div>
+                    <p class="workflow__section-subtitle">Grupos sistêmicos para assinatura digital, rastreabilidade e relatórios.</p>
+                    <p class="workflow__template-note">Selecionados <strong>${selectedMetadataGroups.length}</strong> grupo(s) e <strong>${selectedMetadataFieldCount}</strong> campo(s).</p>
+                    <div class="workflow__metadata-list">${metadataGroupsHtml}</div>
+                </div>
             </div>
 
             <div class="workflow__library workflow__right-column">
@@ -2402,6 +2622,7 @@ function prepareCreateTemplateForModel(modelKey) {
     workflowState.templateNameByModel[modelKey] = ''
     workflowState.templateNameErrorByModel[modelKey] = ''
     workflowState.selectedTemplateStageIdsByModel[modelKey] = new Set(getWorkflowStagesForModel(modelKey).map((stage) => stage.id))
+    workflowState.selectedMetadataGroupsByModel[modelKey] = new Set(workflowDefaultMetadataGroupIds)
 
     const defaults = workflowModelDefaultClauses[modelKey] || ['partes', 'assinatura']
     workflowState.selectedClausesByModel[modelKey] = defaults
@@ -2470,6 +2691,10 @@ function renderWorkflowBoard() {
                 const updatedAt = doc.updatedAt instanceof Date ? doc.updatedAt.toLocaleDateString('pt-BR') : '-'
                 const statusLabel = doc.status || 'rascunho'
                 const immutableLabel = statusLabel === 'rascunho' ? 'Editável' : 'Imutável'
+                const isAditamentoDoc = (doc.templateModel || workflowState.currentModel) === 'aditamento'
+                const parentContractMarkup = isAditamentoDoc
+                    ? `<p class="workflow__doc-meta workflow__doc-meta--link">Vínculo contrato: ${doc.parentContractName || 'Não vinculado'}</p>`
+                    : ''
 
                 return `
                     <div class="workflow__doc">
@@ -2477,6 +2702,7 @@ function renderWorkflowBoard() {
                         <p class="workflow__doc-meta">Última atualização: ${updatedAt}</p>
                         <p class="workflow__doc-meta">Status: ${statusLabel} • ${immutableLabel}</p>
                         <p class="workflow__doc-meta">Template v${doc.templateVersion || '1.0'}</p>
+                        ${parentContractMarkup}
                         <button class="workflow__doc-move" data-move-doc="${doc.id}" ${nextStage ? '' : 'disabled'}>${moveLabel}</button>
                     </div>
                 `
@@ -2712,6 +2938,7 @@ function buildWorkflowSnapshot() {
     }))
     const customExtras = (workflowState.customExtrasByModel[modelKey] || []).map((item) => ({ ...item }))
     const selectedFields = Array.from(workflowState.selectedTemplateFieldsByModel[modelKey] || [])
+    const metadataGroups = Array.from(getWorkflowSelectedMetadataGroupIds(modelKey))
 
     return {
         id: `saved-flow-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
@@ -2721,6 +2948,7 @@ function buildWorkflowSnapshot() {
         stages,
         customExtras,
         selectedFields,
+        metadataGroups,
         clauses
     }
 }
@@ -2874,6 +3102,7 @@ function loadSavedWorkflowById(flowId) {
         ? flow.clauses.map((item) => ({ clauseId: item.clauseId, values: { ...(item.values || {}) } }))
         : []
     workflowState.selectedTemplateFieldsByModel[flow.model] = new Set(Array.isArray(flow.selectedFields) ? flow.selectedFields : [])
+    workflowState.selectedMetadataGroupsByModel[flow.model] = new Set(Array.isArray(flow.metadataGroups) ? flow.metadataGroups : workflowDefaultMetadataGroupIds)
 
     ensureWorkflowModelState(flow.model)
     const stages = getWorkflowCurrentStages()
@@ -2950,6 +3179,95 @@ function saveWorkflowActiveClause() {
     renderWorkflowDocumentPreview()
 }
 
+function getWorkflowAvailableContractsForAditamento() {
+    const contracts = []
+    const seenIds = new Set()
+
+    const appendContracts = (documents, modelKey) => {
+        if (!Array.isArray(documents) || modelKey === 'aditamento') {
+            return
+        }
+
+        documents.forEach((documentItem) => {
+            const contractId = String(documentItem?.id || '').trim()
+            if (!contractId || seenIds.has(contractId)) {
+                return
+            }
+
+            seenIds.add(contractId)
+            contracts.push({
+                id: contractId,
+                name: String(documentItem?.nome || `Contrato ${contractId}`).trim(),
+                modelKey,
+                modelLabel: formatWorkflowModelLabel(modelKey)
+            })
+        })
+    }
+
+    Object.keys(workflowMockSeed.documentsByModel || {}).forEach((modelKey) => {
+        appendContracts(workflowMockSeed.documentsByModel[modelKey], modelKey)
+    })
+
+    Object.keys(workflowState.documentsByModel || {}).forEach((modelKey) => {
+        appendContracts(workflowState.documentsByModel[modelKey], modelKey)
+    })
+
+    return contracts.sort((first, second) => first.name.localeCompare(second.name, 'pt-BR'))
+}
+
+function syncAditamentoParentContractField() {
+    const fieldWrapper = document.getElementById('workflow-parent-contract-field')
+    const parentSelect = document.getElementById('workflow-parent-contract-select')
+    const parentHint = document.getElementById('workflow-parent-contract-hint')
+    const createButton = document.getElementById('workflow-document-create')
+
+    if (!fieldWrapper || !parentSelect || !parentHint) {
+        return { isAditamento: false, contracts: [] }
+    }
+
+    const isAditamento = workflowState.currentModel === 'aditamento'
+    fieldWrapper.classList.toggle('is-hidden', !isAditamento)
+    parentSelect.classList.remove('modal-input--error')
+
+    if (!isAditamento) {
+        parentSelect.innerHTML = ''
+        parentHint.textContent = ''
+        if (createButton) {
+            createButton.disabled = false
+        }
+        return { isAditamento: false, contracts: [] }
+    }
+
+    const contracts = getWorkflowAvailableContractsForAditamento()
+    const previousSelected = parentSelect.value
+    parentSelect.innerHTML = ''
+
+    const placeholder = document.createElement('option')
+    placeholder.value = ''
+    placeholder.textContent = contracts.length
+        ? 'Selecione um contrato existente'
+        : 'Nenhum contrato existente disponível'
+    parentSelect.appendChild(placeholder)
+
+    contracts.forEach((contract) => {
+        const option = document.createElement('option')
+        option.value = contract.id
+        option.textContent = `${contract.name} • ${contract.modelLabel}`
+        option.selected = previousSelected && previousSelected === contract.id
+        parentSelect.appendChild(option)
+    })
+
+    if (createButton) {
+        createButton.disabled = contracts.length === 0
+    }
+
+    parentHint.textContent = contracts.length
+        ? 'Aditamento exige vínculo obrigatório com contrato já existente.'
+        : 'Crie ao menos um contrato base antes de abrir um aditamento.'
+
+    return { isAditamento: true, contracts }
+}
+
 function createWorkflowDocument() {
     const modal = document.getElementById('workflow-new-document-modal')
     const input = document.getElementById('workflow-document-input')
@@ -2957,9 +3275,14 @@ function createWorkflowDocument() {
     if (!modal || !input) return
 
     const info = document.getElementById('workflow-document-template-info')
+    const aditamentoContext = syncAditamentoParentContractField()
     if (info) {
         const selectedFields = workflowState.selectedTemplateFieldsByModel[workflowState.currentModel] || new Set()
-        info.textContent = `Template: ${formatWorkflowModelLabel(workflowState.currentModel)} • versão 1.0 • ${selectedFields.size} campo(s) selecionado(s)`
+        const metadataFieldCount = getWorkflowSelectedMetadataFieldCount(workflowState.currentModel)
+        const aditamentoSuffix = aditamentoContext.isAditamento
+            ? ' • vínculo com contrato existente: obrigatório'
+            : ''
+        info.textContent = `Template: ${formatWorkflowModelLabel(workflowState.currentModel)} • versão 1.0 • ${selectedFields.size} campo(s) de contrato • ${metadataFieldCount} metadado(s) CLM${aditamentoSuffix}`
     }
     
     input.value = ''
@@ -2982,6 +3305,38 @@ function submitWorkflowNewDocument() {
         return
     }
 
+    const parentContractSelect = document.getElementById('workflow-parent-contract-select')
+    let linkedContract = null
+
+    if (workflowState.currentModel === 'aditamento') {
+        const aditamentoContext = syncAditamentoParentContractField()
+
+        if (!aditamentoContext.contracts.length) {
+            showAppAlert({
+                type: 'danger',
+                title: 'Aditamento bloqueado',
+                message: 'Não há contrato base disponível para vínculo. Crie um contrato antes de gerar aditamento.'
+            })
+            return
+        }
+
+        const selectedContractId = parentContractSelect ? parentContractSelect.value : ''
+        linkedContract = aditamentoContext.contracts.find((contract) => contract.id === selectedContractId) || null
+
+        if (!linkedContract) {
+            if (parentContractSelect) {
+                parentContractSelect.classList.add('modal-input--error')
+                parentContractSelect.focus()
+            }
+            showAppAlert({
+                type: 'warning',
+                title: 'Vínculo obrigatório',
+                message: 'Selecione o contrato existente ao qual este aditamento será vinculado.'
+            })
+            return
+        }
+    }
+
     const safeName = input.value.trim() || `Novo ${formatWorkflowModelLabel(workflowState.currentModel)}`
     const documents = getWorkflowCurrentDocuments()
     
@@ -2992,6 +3347,10 @@ function submitWorkflowNewDocument() {
         templateModel: workflowState.currentModel,
         templateVersion: '1.0',
         selectedFields: Array.from(workflowState.selectedTemplateFieldsByModel[workflowState.currentModel] || []),
+        selectedMetadataGroups: Array.from(getWorkflowSelectedMetadataGroupIds(workflowState.currentModel)),
+        parentContractId: linkedContract ? linkedContract.id : '',
+        parentContractName: linkedContract ? linkedContract.name : '',
+        parentContractModel: linkedContract ? linkedContract.modelKey : '',
         status: 'rascunho',
         updatedAt: new Date()
     })
@@ -3145,6 +3504,7 @@ function bindWorkflowEvents() {
                     workflowState.templateNameByModel[modelKey] = formatWorkflowModelLabel(modelKey)
                     workflowState.templateNameErrorByModel[modelKey] = ''
                     workflowState.selectedTemplateStageIdsByModel[modelKey] = new Set(getWorkflowStagesForModel(modelKey).map((stage) => stage.id))
+                    workflowState.selectedMetadataGroupsByModel[modelKey] = new Set(workflowDefaultMetadataGroupIds)
                     workflowState.selectedClausesByModel[modelKey] = []
                     renderWorkflowAll()
                     return
@@ -3155,9 +3515,28 @@ function bindWorkflowEvents() {
                     workflowState.templateNameByModel[modelKey] = loadedTemplate.name || formatWorkflowModelLabel(modelKey)
                     workflowState.templateNameErrorByModel[modelKey] = ''
                     workflowState.selectedTemplateStageIdsByModel[modelKey] = new Set((loadedTemplate.stages || []).map((stage) => stage.id))
+                    workflowState.selectedMetadataGroupsByModel[modelKey] = new Set(Array.isArray(loadedTemplate.metadataGroups) ? loadedTemplate.metadataGroups : workflowDefaultMetadataGroupIds)
                     workflowState.selectedClausesByModel[modelKey] = (loadedTemplate.clauses || []).map((item) => ({ clauseId: item.clauseId, values: {} }))
                     renderWorkflowAll()
                 }
+                return
+            }
+
+            const metadataCheckbox = event.target.closest('[data-template-metadata-group]')
+            if (metadataCheckbox) {
+                const modelKey = workflowState.currentModel
+                const metadataGroupId = metadataCheckbox.getAttribute('data-template-metadata-group')
+                if (!metadataGroupId) return
+
+                const selectedMetadataGroups = getWorkflowSelectedMetadataGroupIds(modelKey)
+                if (metadataCheckbox.checked) {
+                    selectedMetadataGroups.add(metadataGroupId)
+                } else {
+                    selectedMetadataGroups.delete(metadataGroupId)
+                }
+
+                workflowState.selectedMetadataGroupsByModel[modelKey] = selectedMetadataGroups
+                renderWorkflowTemplateContent()
                 return
             }
 
@@ -3252,6 +3631,12 @@ function bindWorkflowEvents() {
         })
     }
 
+    if (workflowRefs.addDocumentButton) {
+        workflowRefs.addDocumentButton.addEventListener('click', () => {
+            createWorkflowDocument()
+        })
+    }
+
     if (workflowRefs.board) {
         workflowRefs.board.addEventListener('click', (event) => {
             const button = event.target.closest('[data-move-doc]')
@@ -3316,6 +3701,7 @@ function bindWorkflowEvents() {
         const createBtn = document.getElementById('workflow-document-create')
         const cancelBtn = document.getElementById('workflow-document-cancel')
         const input = document.getElementById('workflow-document-input')
+        const parentContractSelect = document.getElementById('workflow-parent-contract-select')
 
         if (createBtn) {
             createBtn.addEventListener('click', submitWorkflowNewDocument)
@@ -3327,6 +3713,11 @@ function bindWorkflowEvents() {
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') submitWorkflowNewDocument()
                 else if (e.key === 'Escape') closeWorkflowNewDocumentModal()
+            })
+        }
+        if (parentContractSelect) {
+            parentContractSelect.addEventListener('change', () => {
+                parentContractSelect.classList.remove('modal-input--error')
             })
         }
         newDocModal.addEventListener('click', (e) => {
@@ -4547,6 +4938,19 @@ const docWorkflowScenariosByAccess = {
                 { nome: 'Carla Souza', perfil: 'Gestor', dados: ['Prazo de locacao', 'Valor mensal', 'Dados do locador'] },
                 { nome: 'Elaine Martins', perfil: 'Gestor', dados: ['Validacao financeira'] }
             ]
+        },
+        {
+            id: 'doc-ges-003',
+            model: 'aditamento',
+            nome: 'Aditamento - Unidade Centro',
+            status: 'Pendente',
+            prazo: 'Hoje',
+            parentContractId: 'doc-ges-001',
+            parentContractName: 'Prestacao de Servicos - Consultoria Global',
+            pessoas: [
+                { nome: 'Carla Souza', perfil: 'Gestor', dados: ['Tipo de Vigencia', 'Número Aditamento Contrato', 'Dados da Contratada'] },
+                { nome: 'Bruno Silva', perfil: 'Gerente', dados: ['Validacao juridica do aditamento'] }
+            ]
         }
     ]
 }
@@ -4606,9 +5010,292 @@ function getDocWorkflowStepsForAccess(modelKey, accessKey) {
     return modelSteps.filter((step) => allowed.has(Math.floor(Number(step.id))))
 }
 
+function formatDocWorkflowPrazoFromDate(updatedAt) {
+    if (!updatedAt) {
+        return 'Sem prazo'
+    }
+
+    const parsedDate = updatedAt instanceof Date ? updatedAt : new Date(updatedAt)
+    if (Number.isNaN(parsedDate.getTime())) {
+        return 'Sem prazo'
+    }
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const target = new Date(parsedDate)
+    target.setHours(0, 0, 0, 0)
+
+    const diffDays = Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 0) return 'Hoje'
+    if (diffDays === 1) return 'Amanhã'
+    if (diffDays > 1) return `Em ${diffDays} dias`
+    return `Atrasado ${Math.abs(diffDays)} dia(s)`
+}
+
+function getDocWorkflowMetadataGroupsForModel(modelKey) {
+    try {
+        if (typeof getWorkflowSelectedMetadataGroupIds === 'function') {
+            return Array.from(getWorkflowSelectedMetadataGroupIds(modelKey) || [])
+        }
+    } catch (error) {
+    }
+
+    return []
+}
+
+function getDocWorkflowMergedEngineDocuments(accessKey) {
+    const profile = docWorkflowAccessProfiles[accessKey] || docWorkflowAccessProfiles.gestor
+    const merged = []
+
+    Object.entries(workflowState?.documentsByModel || {}).forEach(([modelKey, documents]) => {
+        if (!Array.isArray(documents)) return
+
+        documents.forEach((documentItem) => {
+            const safeId = String(documentItem?.id || '').trim()
+            if (!safeId) return
+
+            const safeModel = documentItem?.templateModel || modelKey
+            merged.push({
+                id: safeId,
+                model: safeModel,
+                nome: String(documentItem?.nome || `Documento ${safeId}`),
+                status: String(documentItem?.status || 'rascunho'),
+                prazo: formatDocWorkflowPrazoFromDate(documentItem?.updatedAt),
+                pessoas: [
+                    {
+                        nome: 'Fluxo interno',
+                        perfil: profile.label,
+                        dados: ['Preenchimento de propriedades contratuais']
+                    }
+                ],
+                selectedMetadataGroups: Array.isArray(documentItem?.selectedMetadataGroups)
+                    ? documentItem.selectedMetadataGroups
+                    : getDocWorkflowMetadataGroupsForModel(safeModel),
+                parentContractId: String(documentItem?.parentContractId || ''),
+                parentContractName: String(documentItem?.parentContractName || ''),
+                parentContractModel: String(documentItem?.parentContractModel || ''),
+                contractData: documentItem?.contractData && typeof documentItem.contractData === 'object'
+                    ? { ...documentItem.contractData }
+                    : {}
+            })
+        })
+    })
+
+    return merged
+}
+
 function getDocWorkflowPendingDocuments(accessKey) {
     const source = docWorkflowScenariosByAccess[accessKey] || docWorkflowScenariosByAccess.gestor
-    return source.map((item) => ({ ...item, pessoas: item.pessoas.map((person) => ({ ...person, dados: [...person.dados] })) }))
+    const scenarioDocuments = source.map((item) => ({
+        ...item,
+        pessoas: Array.isArray(item.pessoas)
+            ? item.pessoas.map((person) => ({ ...person, dados: [...person.dados] }))
+            : [],
+        selectedMetadataGroups: Array.isArray(item.selectedMetadataGroups)
+            ? [...item.selectedMetadataGroups]
+            : getDocWorkflowMetadataGroupsForModel(item.model),
+        parentContractId: String(item.parentContractId || ''),
+        parentContractName: String(item.parentContractName || ''),
+        parentContractModel: String(item.parentContractModel || ''),
+        contractData: item.contractData && typeof item.contractData === 'object'
+            ? { ...item.contractData }
+            : {}
+    }))
+
+    const mergedById = new Map(scenarioDocuments.map((item) => [item.id, item]))
+
+    getDocWorkflowMergedEngineDocuments(accessKey).forEach((engineDocument) => {
+        if (!mergedById.has(engineDocument.id)) {
+            mergedById.set(engineDocument.id, engineDocument)
+            return
+        }
+
+        const currentItem = mergedById.get(engineDocument.id)
+        mergedById.set(engineDocument.id, {
+            ...currentItem,
+            status: engineDocument.status || currentItem.status,
+            parentContractId: currentItem.parentContractId || engineDocument.parentContractId,
+            parentContractName: currentItem.parentContractName || engineDocument.parentContractName,
+            parentContractModel: currentItem.parentContractModel || engineDocument.parentContractModel,
+            selectedMetadataGroups: currentItem.selectedMetadataGroups?.length
+                ? currentItem.selectedMetadataGroups
+                : engineDocument.selectedMetadataGroups,
+            contractData: {
+                ...(currentItem.contractData || {}),
+                ...(engineDocument.contractData || {})
+            }
+        })
+    })
+
+    return Array.from(mergedById.values())
+}
+
+function getDocWorkflowDynamicPropertyColumns(modelKey) {
+    const selectedFieldsByModel = workflowState?.selectedTemplateFieldsByModel?.[modelKey]
+    const selectedFields = selectedFieldsByModel instanceof Set
+        ? Array.from(selectedFieldsByModel)
+        : []
+
+    const baseFields = selectedFields.length
+        ? selectedFields
+        : getDocWorkflowModelFields(modelKey)
+
+    return baseFields
+        .filter((fieldName) => typeof fieldName === 'string' && fieldName.trim())
+        .slice(0, 6)
+}
+
+function getDocWorkflowFlatStepValues(documentId) {
+    const allStepValues = docWorkflowState.stepValuesByDocument?.[documentId]
+    if (!allStepValues || typeof allStepValues !== 'object') {
+        return {}
+    }
+
+    const flatValues = {}
+    Object.keys(allStepValues)
+        .sort((first, second) => Number(first) - Number(second))
+        .forEach((stepKey) => {
+            const stepValues = allStepValues[stepKey]
+            if (!stepValues || typeof stepValues !== 'object') {
+                return
+            }
+
+            Object.entries(stepValues).forEach(([fieldName, fieldValue]) => {
+                const safeValue = String(fieldValue || '').trim()
+                if (!safeValue) {
+                    return
+                }
+
+                if (!flatValues[fieldName]) {
+                    flatValues[fieldName] = safeValue
+                }
+
+                const normalizedFieldName = String(fieldName).trim().toLowerCase()
+                if (normalizedFieldName && !flatValues[normalizedFieldName]) {
+                    flatValues[normalizedFieldName] = safeValue
+                }
+            })
+        })
+
+    return flatValues
+}
+
+function formatDocWorkflowCurrency(rawValue) {
+    const numericValue = Number(String(rawValue || '').replace(',', '.'))
+    if (!Number.isFinite(numericValue)) {
+        return String(rawValue || '')
+    }
+
+    return numericValue.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    })
+}
+
+function resolveDocWorkflowDateValue(flatValues, normalizedField, fallbackPrazo) {
+    const orderedDateFields = [
+        flatValues.dataAssinatura,
+        flatValues.dataDecisao,
+        flatValues.dataSolicitacao,
+        flatValues.dataPublicacao
+    ].filter(Boolean)
+
+    if (normalizedField.includes('início') || normalizedField.includes('inicio')) {
+        return orderedDateFields[0] ? formatDisplayDate(orderedDateFields[0]) || orderedDateFields[0] : 'Não informado'
+    }
+
+    if (normalizedField.includes('fim') || normalizedField.includes('término') || normalizedField.includes('termino')) {
+        return orderedDateFields[1] ? formatDisplayDate(orderedDateFields[1]) || orderedDateFields[1] : 'Não informado'
+    }
+
+    if (orderedDateFields[0]) {
+        return formatDisplayDate(orderedDateFields[0]) || orderedDateFields[0]
+    }
+
+    if (fallbackPrazo) {
+        return String(fallbackPrazo)
+    }
+
+    return 'Não informado'
+}
+
+function getDocWorkflowPropertyValue(documentItem, fieldName) {
+    const explicitValue = documentItem?.contractData?.[fieldName]
+    if (explicitValue !== undefined && explicitValue !== null && String(explicitValue).trim()) {
+        return String(explicitValue).trim()
+    }
+
+    const flatStepValues = getDocWorkflowFlatStepValues(documentItem?.id)
+    if (flatStepValues[fieldName]) {
+        return String(flatStepValues[fieldName])
+    }
+
+    const normalizedField = String(fieldName || '').toLowerCase()
+
+    if (flatStepValues[normalizedField]) {
+        return String(flatStepValues[normalizedField])
+    }
+
+    if (documentItem?.model === 'aditamento' && normalizedField.includes('nome do contrato') && documentItem?.parentContractName) {
+        return String(documentItem.parentContractName)
+    }
+
+    if (normalizedField.includes('nome do contrato') || normalizedField.includes('nome do documento') || normalizedField.includes('título') || normalizedField.includes('titulo')) {
+        return String(flatStepValues.titulo || documentItem?.nome || 'Não informado')
+    }
+
+    if (normalizedField.includes('descrição') || normalizedField.includes('descricao') || normalizedField.includes('objeto')) {
+        return String(flatStepValues.resumo || 'Não informado')
+    }
+
+    if (normalizedField.includes('responsável') || normalizedField.includes('responsavel') || normalizedField.includes('nome do contato')) {
+        return String(flatStepValues.responsavel || 'Não informado')
+    }
+
+    if (normalizedField.includes('valor')) {
+        if (flatStepValues.valorAprovado) {
+            return formatDocWorkflowCurrency(flatStepValues.valorAprovado)
+        }
+
+        if (flatStepValues.valorTotal) {
+            return formatDocWorkflowCurrency(flatStepValues.valorTotal)
+        }
+
+        return 'Não informado'
+    }
+
+    if (normalizedField.includes('data')) {
+        return resolveDocWorkflowDateValue(flatStepValues, normalizedField, documentItem?.prazo)
+    }
+
+    if (normalizedField.includes('tipo de contrato') || normalizedField.includes('tipo da minuta') || normalizedField === 'modelo') {
+        return formatDocWorkflowModelLabel(documentItem?.model || '')
+    }
+
+    if (normalizedField.includes('clm id') || normalizedField.includes('#identificador clm')) {
+        const baseId = String(documentItem?.id || '').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 12)
+        return baseId ? `CLM-${baseId}` : 'Não informado'
+    }
+
+    if (normalizedField === '# do documento') {
+        return String(documentItem?.id || 'Não informado')
+    }
+
+    if (normalizedField === 'status') {
+        return String(documentItem?.status || 'Não informado')
+    }
+
+    if (normalizedField.includes('opções de revisão da minuta')) {
+        return 'Padrão'
+    }
+
+    if (normalizedField.includes('vigência')) {
+        return 'A definir'
+    }
+
+    return 'Não informado'
 }
 
 function getDocFieldKey(documentId, stepId, fieldName) {
@@ -4911,13 +5598,50 @@ function renderDocWorkflowPage() {
     const documents = getDocWorkflowPendingDocuments(accessKey)
     const activeDocument = documents.find((item) => item.id === docWorkflowState.selectedDocumentId) || null
     const modelKey = activeDocument?.model || documents[0]?.model || 'prestacao-servicos'
+    const dynamicPropertyColumns = getDocWorkflowDynamicPropertyColumns(modelKey)
     const steps = getDocWorkflowStepsForAccess(modelKey, accessKey)
     const currentStep = activeDocument ? steps[docWorkflowState.currentStepIndex] : null
+
+    const dynamicHeaders = dynamicPropertyColumns
+        .map((fieldName) => `<th class="workflow__col-property" title="${escapeDocHtml(fieldName)}">${escapeDocHtml(fieldName)}</th>`)
+        .join('')
+
+    const tableHeaderMarkup = `
+        <tr>
+            <th>Documento</th>
+            <th>Tipo de contrato</th>
+            ${dynamicHeaders}
+            <th>Quem vai preencher</th>
+            <th>Dados requisitados</th>
+            <th>Status</th>
+            <th>Prazo</th>
+            <th>Acao</th>
+        </tr>
+    `
 
     const tableRows = documents.map((documentItem) => {
         const pessoas = documentItem.pessoas
             .map((person) => `<p class="workflow__pending-line"><strong>${person.nome}</strong> <span>(${person.perfil})</span></p>`)
             .join('')
+
+        const metadataGroups = Array.isArray(documentItem.selectedMetadataGroups)
+            ? documentItem.selectedMetadataGroups
+            : []
+        const metadataChipClass = metadataGroups.length
+            ? 'workflow__pending-doc-chip'
+            : 'workflow__pending-doc-chip workflow__pending-doc-chip--muted'
+        const metadataLabel = metadataGroups.length
+            ? `CLM: ${metadataGroups.length} grupo(s)`
+            : 'CLM: não configurado'
+        const aditamentoLink = documentItem.model === 'aditamento'
+            ? `<p class="workflow__pending-doc-link">Vínculo: ${escapeDocHtml(documentItem.parentContractName || 'Não vinculado')}</p>`
+            : ''
+
+        const documentCellMarkup = `
+            <div class="workflow__pending-doc-title">${escapeDocHtml(documentItem.nome)}</div>
+            <span class="${metadataChipClass}">${escapeDocHtml(metadataLabel)}</span>
+            ${aditamentoLink}
+        `
 
         const dados = documentItem.pessoas
             .map((person) => `<p class="workflow__pending-line"><strong>${person.nome}:</strong> ${person.dados.join(', ') || '-'}</p>`)
@@ -4926,10 +5650,20 @@ function renderDocWorkflowPage() {
         const isActiveDocument = docWorkflowState.selectedDocumentId === documentItem.id
         const actionLabel = isActiveDocument ? 'Dados sendo preenchidos' : 'Preencher dados'
         const actionClass = isActiveDocument ? 'workflow__pending-action is-active' : 'workflow__pending-action'
+        const propertyCells = dynamicPropertyColumns.map((fieldName) => {
+            const fieldValue = getDocWorkflowPropertyValue(documentItem, fieldName)
+            const valueClass = fieldValue === 'Não informado'
+                ? 'workflow__pending-value workflow__pending-value--empty'
+                : 'workflow__pending-value'
+
+            return `<td class="workflow__col-property" title="${escapeDocHtml(fieldValue)}"><span class="${valueClass}">${escapeDocHtml(fieldValue)}</span></td>`
+        }).join('')
 
         return `
             <tr>
-                <td>${escapeDocHtml(documentItem.nome)}</td>
+                <td>${documentCellMarkup}</td>
+                <td>${escapeDocHtml(formatDocWorkflowModelLabel(documentItem.model))}</td>
+                ${propertyCells}
                 <td>${pessoas}</td>
                 <td>${dados}</td>
                 <td>${escapeDocHtml(documentItem.status)}</td>
@@ -4978,16 +5712,9 @@ function renderDocWorkflowPage() {
                     <div class="workflow__section-title">Documentos pendentes para preenchimento</div>
                     <p class="workflow__section-subtitle">Cenario: <strong>${profile.label}</strong>. Veja quem preenche cada dado e inicie o wizard do documento correspondente.</p>
                     <div class="workflow__pending-table-wrap">
-                        <table class="workflow__pending-table">
+                        <table class="workflow__pending-table workflow__pending-table--contracts">
                             <thead>
-                                <tr>
-                                    <th>Documento</th>
-                                    <th>Quem vai preencher</th>
-                                    <th>Dados requisitados</th>
-                                    <th>Status</th>
-                                    <th>Prazo</th>
-                                    <th>Acao</th>
-                                </tr>
+                                ${tableHeaderMarkup}
                             </thead>
                             <tbody>${tableRows}</tbody>
                         </table>
@@ -5004,16 +5731,9 @@ function renderDocWorkflowPage() {
                     <div class="workflow__section-title">Documentos pendentes para preenchimento</div>
                     <p class="workflow__section-subtitle">Cenario: <strong>${profile.label}</strong>. Clique em <strong>Preencher dados</strong> para abrir o wizard do documento.</p>
                     <div class="workflow__pending-table-wrap">
-                        <table class="workflow__pending-table">
+                        <table class="workflow__pending-table workflow__pending-table--contracts">
                             <thead>
-                                <tr>
-                                    <th>Documento</th>
-                                    <th>Quem vai preencher</th>
-                                    <th>Dados requisitados</th>
-                                    <th>Status</th>
-                                    <th>Prazo</th>
-                                    <th>Acao</th>
-                                </tr>
+                                ${tableHeaderMarkup}
                             </thead>
                             <tbody>${tableRows}</tbody>
                         </table>

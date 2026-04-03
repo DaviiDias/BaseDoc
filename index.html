@@ -457,6 +457,7 @@
                                 <p class="workflow__section-subtitle">Selecione ou crie um template, ajuste os steps por caixa e gerencie as cláusulas do template.</p>
                             </div>
                             <div class="workflow__template-hub-actions">
+                                <button type="button" class="btn btn--secondary" id="workflow-new-document">Novo documento</button>
                                 <button type="button" class="btn btn--secondary" id="workflow-template-new-btn">Criar novo template</button>
                             </div>
                         </div>
@@ -995,6 +996,13 @@
                 <h2 class="modal-title">Novo documento</h2>
                 <p class="modal-hint" id="workflow-document-template-info"></p>
                 <input type="text" class="modal-input" id="workflow-document-input" placeholder="Nome do documento" />
+                <div class="modal-form is-hidden" id="workflow-parent-contract-field">
+                    <div class="modal-field">
+                        <label class="modal-label" for="workflow-parent-contract-select">Contrato existente vinculado (obrigatório para aditamento)</label>
+                        <select class="modal-input" id="workflow-parent-contract-select"></select>
+                        <p class="modal-hint" id="workflow-parent-contract-hint"></p>
+                    </div>
+                </div>
                 <label class="workflow__focus workflow__focus--static">
                     <input type="checkbox" checked disabled>
                     <span>Documento imutável após sair de rascunho</span>
